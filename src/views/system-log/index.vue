@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-   系统的账号管理
+    查看系统日志
   </div>
 </template>
 

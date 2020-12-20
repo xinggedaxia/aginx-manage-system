@@ -62,7 +62,19 @@ export const constantRoutes = [
         path: '',
         name: 'accountMange',
         component: () => import('@/views/account-manage/index'),
-        meta: { title: '账号管理', icon: 'form' }
+        meta: { title: '账号管理', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/user-manage',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'accountMange',
+        component: () => import('@/views/user-manage/index'),
+        meta: { title: '用户管理', icon: 'peoples' }
       }
     ]
   },
@@ -75,6 +87,18 @@ export const constantRoutes = [
         name: 'questionsManage',
         component: () => import('@/views/questions-manage'),
         meta: { title: '题目管理', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/system-log',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'systemLog',
+        component: () => import('@/views/system-log'),
+        meta: { title: '系统日志', icon: 'el-icon-document' }
       }
     ]
   },

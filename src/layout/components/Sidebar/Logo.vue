@@ -6,8 +6,8 @@
         <h1 v-else class="sidebar-title">{{ title }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-<!--        <img v-if="logo" :src="logo" class="sidebar-logo">-->
-        <img src="@/assets/logo/logo.png" alt="logo" class="sidebar-logo">
+        <!--        <img src="@/assets/logo/logo.png" alt="logo" class="sidebar-logo">-->
+        <span class="sidebar-text-logo">aginx</span>
         <h1 class="sidebar-title">{{ title }} </h1>
       </router-link>
     </transition>
@@ -54,7 +54,15 @@ export default {
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
-
+    .sidebar-text-logo{
+      position: absolute;
+      width: 70px;
+      height: 100%;
+      font-size: 22px;
+      font-weight: bold;
+      font-style: italic;
+      color: #E6A23C;
+    }
     & .sidebar-logo {
       width: 32px;
       height: 32px;
@@ -64,11 +72,11 @@ export default {
 
     & .sidebar-title {
       display: inline-block;
-      margin: 0;
+      margin: 0 0 0 65px;
       color: #fff;
       font-weight: 600;
       line-height: 50px;
-      font-size: 14px;
+      font-size: 16px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
     }
