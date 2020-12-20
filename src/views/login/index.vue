@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import jsencrypt from '@/utils/jsencrypt'
 import { validUsername } from '@/utils/validate'
 
 export default {
@@ -104,6 +105,11 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          var encryptPsd = jsencrypt.encrypt(this.loginForm.password);
+          this.loginForm.password = encryptPsd;
+          console.log('encryptPwd:',encryptPsd)
+          var decryptData = jsencrypt.decrypt(encryptPsd);
+          console.log('decryptData:',decryptData)
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
