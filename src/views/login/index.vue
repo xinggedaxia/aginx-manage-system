@@ -112,11 +112,8 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          var encryptPsd = jsencrypt.encrypt(this.loginForm.password);
-          this.loginForm.password = encryptPsd;
-          console.log('encryptPwd:',encryptPsd)
-          var decryptData = jsencrypt.decrypt(encryptPsd);
-          console.log('decryptData:',decryptData)
+          const encryptPsd = jsencrypt.encrypt(this.loginForm.password)
+          this.loginForm.password = encryptPsd
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
