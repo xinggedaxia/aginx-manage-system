@@ -5,25 +5,25 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
+      <el-dropdown class="avatar-container" trigger="hover">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <span class="user-name">{{ name }}</span>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
-            <el-dropdown-item>
-              Home
-            </el-dropdown-item>
-          </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
-          <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+          <!--          <router-link to="/">-->
+          <!--            <el-dropdown-item>-->
+          <!--              Home-->
+          <!--            </el-dropdown-item>-->
+          <!--          </router-link>-->
+          <!--          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">-->
+          <!--            <el-dropdown-item>Github</el-dropdown-item>-->
+          <!--          </a>-->
+          <!--          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">-->
+          <!--            <el-dropdown-item>Docs</el-dropdown-item>-->
+          <!--          </a>-->
+          <el-dropdown-item @click.native="logout">
+            <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -44,7 +44,8 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ])
   },
   methods: {
@@ -65,7 +66,7 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
 
   .hamburger-container {
     line-height: 46px;
@@ -73,7 +74,7 @@ export default {
     float: left;
     cursor: pointer;
     transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
       background: rgba(0, 0, 0, .025)
@@ -87,7 +88,8 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    margin-right: 40px;
+
 
     &:focus {
       outline: none;
@@ -95,7 +97,7 @@ export default {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 8px;
+      padding: 0 40px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
@@ -112,26 +114,32 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        cursor: pointer;
         position: relative;
+        display: flex;
+        align-items: center;
+        line-height: 50px;
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
         }
 
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
+        .user-name {
+          margin-left: 10px;
         }
+
+        //.el-icon-caret-bottom {
+        //  cursor: pointer;
+        //  position: absolute;
+        //  right: -20px;
+        //  top: 25px;
+        //  font-size: 12px;
+        //}
       }
     }
   }
