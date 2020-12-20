@@ -25,50 +25,50 @@ const users = {
 
 module.exports = [
   // user login
-  {
-    url: '/vue-admin-template/user/login',
-    type: 'post',
-    response: config => {
-      // const { username } = config.body
-      const token = tokens['admin']
-
-      // mock error
-      if (!token) {
-        return {
-          code: 60204,
-          message: 'Account and password are incorrect.'
-        }
-      }
-
-      return {
-        code: 20000,
-        data: token
-      }
-    }
-  },
+  // {
+  //   url: '/vue-admin-template/user/login',
+  //   type: 'post',
+  //   response: config => {
+  //     // const { username } = config.body
+  //     const token = tokens['admin']
+  //
+  //     // mock error
+  //     if (!token) {
+  //       return {
+  //         code: 60204,
+  //         message: 'Account and password are incorrect.'
+  //       }
+  //     }
+  //
+  //     return {
+  //       code: 20000,
+  //       data: token
+  //     }
+  //   }
+  // },
 
   // get user info
-  {
-    url: '/vue-admin-template/user/info\.*',
-    type: 'get',
-    response: config => {
-      const { token } = config.query
-      const info = users[token]
-
-      // mock error
-      if (!info) {
-        return {
-          code: 50008,
-          message: 'Login failed, unable to get user details.'
-        }
-      }
-
-      return {
-        code: 20000,
-        data: info
-      }
-    }
-  },
+  // {
+  //   url: 'http://120.25.27.70/manageSystem/api/vue-admin-template/user/info\.*',
+  //   type: 'get',
+  //   response: config => {
+  //     const { token } = config.query
+  //     const info = users[token]
+  //
+  //     // mock error
+  //     if (!info) {
+  //       return {
+  //         code: 50008,
+  //         message: 'Login failed, unable to get user details.'
+  //       }
+  //     }
+  //
+  //     return {
+  //       code: 10000,
+  //       data: info
+  //     }
+  //   }
+  // },
 
   // user logout
   {

@@ -60,7 +60,7 @@ export const constantRoutes = [
     children: [
       {
         path: '',
-        name: 'accountMange',
+        name: 'accountManage',
         component: () => import('@/views/account-manage/index'),
         meta: { title: '账号管理', icon: 'user' }
       }
@@ -72,7 +72,7 @@ export const constantRoutes = [
     children: [
       {
         path: '',
-        name: 'accountMange',
+        name: 'userManage',
         component: () => import('@/views/user-manage/index'),
         meta: { title: '用户管理', icon: 'peoples' }
       }

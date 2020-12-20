@@ -113,11 +113,11 @@ export default {
         if (valid) {
           this.loading = true
           const encryptPsd = jsencrypt.encrypt(this.loginForm.password)
-          this.loginForm.password = encryptPsd
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
+          this.$store.dispatch('user/login', { username: this.loginForm.username, password: encryptPsd }).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
-          }).catch(() => {
+          }).catch((err) => {
+            console.log(err)
             this.loading = false
           })
         } else {
