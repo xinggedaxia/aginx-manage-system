@@ -14,7 +14,6 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    console.log('config', config)
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
@@ -28,7 +27,7 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
+    console.log('ReqError/', error) // for debug
     return Promise.reject(error)
   }
 )
@@ -57,11 +56,11 @@ service.interceptors.response.use(
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if (res.code === 403) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm('你已经被登出, 你可以点击取消留在这个界面, 或者重新登录', '确认登出?', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
@@ -69,26 +68,31 @@ service.interceptors.response.use(
           })
         })
       }
+      console.log('ResError', res)
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
   },
   error => {
-    console.log('err/' + error) // for debug
+    console.log('CatchRrr/' + error) // for debug
     if (error.message) {
+      let message = error.message || '请求错误'
+      if (error.message.includes('timeout')) {
+        message = '请求超时'
+      }
+      if (error.message.includes('Network Error')) {
+        message = '网络请求错误'
+      }
+
       Message({
-        message: error.message,
+        message,
         type: 'error',
         duration: 5 * 1000
       })
     } else {
-      let message = 'error'
-      if (error.includes('timeout')) {
-        message = '请求超时'
-      }
       Message({
-        message,
+        message: '请求错误',
         type: 'error',
         duration: 5 * 1000
       })
