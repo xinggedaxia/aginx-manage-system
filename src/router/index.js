@@ -60,7 +60,7 @@ export const constantRoutes = [
     children: [
       {
         path: '',
-        name: 'accountManage',
+        name: 'AccountManage',
         component: () => import('@/views/account-manage/index'),
         meta: { title: '账号管理', icon: 'user' }
       }
@@ -72,7 +72,7 @@ export const constantRoutes = [
     children: [
       {
         path: '',
-        name: 'userManage',
+        name: 'UserManage',
         component: () => import('@/views/user-manage/index'),
         meta: { title: '用户管理', icon: 'peoples' }
       }
@@ -84,7 +84,7 @@ export const constantRoutes = [
     children: [
       {
         path: '',
-        name: 'questionsManage',
+        name: 'QuestionsManage',
         component: () => import('@/views/questions-manage'),
         meta: { title: '题目管理', icon: 'form' }
       }
@@ -96,9 +96,33 @@ export const constantRoutes = [
     children: [
       {
         path: '',
-        name: 'systemLog',
+        name: 'SystemLog',
         component: () => import('@/views/system-log'),
         meta: { title: '系统日志', icon: 'el-icon-document' }
+      }
+    ]
+  },
+  {
+    path: '/website-feedback',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'WebsiteFeedback',
+        component: () => import('@/views/website-feedback'),
+        meta: { title: '网站反馈', icon: 'el-icon-document' }
+      }
+    ]
+  },
+  {
+    path: '/question-feedback',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'QuestionFeedback',
+        component: () => import('@/views/question-feedback'),
+        meta: { title: '题目反馈', icon: 'el-icon-document' }
       }
     ]
   },

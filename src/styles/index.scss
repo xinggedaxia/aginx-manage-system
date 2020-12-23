@@ -61,5 +61,28 @@ div:focus {
 
 // main-container global css
 .app-container {
-  padding: 20px;
+  //padding: 20px;
+}
+
+//定制内容布局
+.layout-content{
+  margin: 24px;
+}
+
+//定制搜索栏的样式
+.table-page-search-wrapper{
+  margin-left: -24px;//消除gutter导致的左边距
+  .el-form--inline{
+    .el-form-item{
+      display: flex;
+      margin-bottom: 24px;
+      margin-right: 0;
+      .el-form-item__content{
+        flex: 1;
+        .el-select{
+          width: 100%;
+        }
+      }
+    }
+  }
 }

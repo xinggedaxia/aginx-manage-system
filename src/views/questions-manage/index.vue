@@ -8,6 +8,7 @@
 import { getList } from '@/api/table'
 
 export default {
+  name: 'QuestionsManage',
   filters: {
     statusFilter(status) {
       const statusMap = {

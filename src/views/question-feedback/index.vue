@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
-    查看系统日志
+    题目反馈
   </div>
 </template>
 
 <script>
 export default {
-  name: 'SystemLog',
+  name: 'QuestionFeedback',
   data() {
     return {
       form: {
