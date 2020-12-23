@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-content">
+  <div class="layout-content account-manage-page">
     <el-card class="box-card">
       <div class="table-page-search-wrapper">
         <el-form :inline="true" :model="listQuery" label-width="80px" size="small">
@@ -32,11 +32,19 @@
                   <el-input v-model="listQuery.user" placeholder="用户名" />
                 </el-form-item>
               </el-col>
+              <el-col :md="8" :sm="24">
+                <el-form-item label="条件3">
+                  <el-input v-model="listQuery.user" placeholder="用户名" />
+                </el-form-item>
+              </el-col>
             </template>
 
             <!--查询操作按钮-->
             <el-col :md="!advanced && 8 || 24" :sm="24">
-              <div class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
+              <div
+                class="table-page-search-submitButtons"
+                :style="advanced && { float: 'right', overflow: 'hidden' } || {} "
+              >
                 <el-button type="primary" size="small" @click="getList">查询</el-button>
                 <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
                 <el-button size="small" @click="getList">重置</el-button>
@@ -58,7 +66,6 @@
         fit
         highlight-current-row
         style="width: 100%;"
-        @sort-change="sortChange"
       >
         <el-table-column label="用户名" prop="name" />
         <el-table-column label="权限" prop="role" />
@@ -69,7 +76,7 @@
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
-          <template slot-scope="{row,$index}">
+          <template v-slot="{row,$index}">
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               编辑
             </el-button>
@@ -85,27 +92,54 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+      <!--分页-->
+      <pagination
+        v-show="list.length>0"
+        :total="list.length"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        @pagination="getList"
+      />
 
       <!--编辑新增共用弹窗-->
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-          <el-form-item label="Date" prop="timestamp">
-            <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
+        <el-form
+          ref="dataForm"
+          :rules="rules"
+          :model="temp"
+          label-position="left"
+          label-width="70px"
+          style="width: 400px; margin-left:50px;"
+        >
+          <el-form-item label="用户名" prop="name">
+            <el-input v-model="temp.name" placeholder="placeholder" />
           </el-form-item>
-          <el-form-item label="Title" prop="title">
-            <el-input v-model="temp.title" />
-          </el-form-item>
-          <el-form-item label="Status">
-            <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-              <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
+          <el-form-item label="权限" prop="role">
+            <el-select v-model="temp.role" placeholder="placeholder">
+              <el-option
+                v-for="item in [{label:'管理员',value:'admin'},{label:'游客',value:'visitor'}]"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
-          <el-form-item label="Imp">
-            <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="temp.status" placeholder="placeholder">
+              <el-option
+                v-for="item in [{label:'启用',value:1},{label:'停用',value:0}]"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
-          <el-form-item label="Remark">
-            <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+          <el-form-item label="描述" prop="timestamp">
+            <el-input
+              v-model="temp.desc"
+              type="textarea"
+              placeholder="placeholder"
+            />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -143,13 +177,61 @@ export default {
         {
           name: 'xingge',
           role: 'admin',
-          desc: '<-----强哥说他牛逼可以把那个点的位置改到左边',
+          desc: new Date().toLocaleString(),
           status: 1
         },
         {
           name: '强哥',
           role: 'admin',
-          desc: '捞的淌口水哦',
+          desc: new Date().toLocaleString(),
+          status: 0
+        },
+        {
+          name: 'xingge',
+          role: 'admin',
+          desc: new Date().toLocaleString(),
+          status: 1
+        },
+        {
+          name: '强哥',
+          role: 'admin',
+          desc: new Date().toLocaleString(),
+          status: 0
+        },
+        {
+          name: 'xingge',
+          role: 'admin',
+          desc: new Date().toLocaleString(),
+          status: 1
+        },
+        {
+          name: '强哥',
+          role: 'admin',
+          desc: new Date().toLocaleString(),
+          status: 0
+        },
+        {
+          name: 'xingge',
+          role: 'admin',
+          desc: new Date().toLocaleString(),
+          status: 1
+        },
+        {
+          name: '强哥',
+          role: 'admin',
+          desc: new Date().toLocaleString(),
+          status: 0
+        },
+        {
+          name: 'xingge',
+          role: 'admin',
+          desc: new Date().toLocaleString(),
+          status: 1
+        },
+        {
+          name: '强哥',
+          role: 'admin',
+          desc: new Date().toLocaleString(),
           status: 0
         }
       ], // 表格数据
@@ -157,7 +239,7 @@ export default {
       listLoading: true, // 表格加载状态
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
@@ -166,14 +248,11 @@ export default {
       advanced: false, // 是否展开高级搜索条件
       statusOptions: ['published', 'draft', 'deleted'],
       temp: {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
-      },
+        name: '强哥',
+        role: 'admin',
+        desc: '捞的淌口水哦',
+        status: 0
+      }, // 存储新增和编辑框的数据
       textMap: {
         update: '编辑',
         create: '新增'
@@ -188,42 +267,20 @@ export default {
     }
   },
   created() {
-    this.listLoading = false// 加入接口后去掉
-    // this.getList()
+    this.getList()
   },
   methods: {
     getList() {
+      // setTimeout中使用function this指向window !!!
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+      setTimeout(() => {
         this.listLoading = false
-      })
-    },
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
-    },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
+      }, 500)
+      // fetchList(this.listQuery).then(response => {
+      //   this.list = response.data.items
+      //   this.total = response.data.total
+      //   this.listLoading = false
+      // })
     },
     resetTemp() {
       this.temp = {
@@ -262,15 +319,17 @@ export default {
         }
       })
     },
+    // 点击编辑
     handleUpdate(row) {
+      console.log(row)
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // 保存编辑
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -303,26 +362,26 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
 
-.layout-content{
-  .table-page-search-submitButtons{
+<!--全局样式-->
+<style>
+.account-manage-page .el-badge {
+  padding-left: 15px;
+}
+
+.account-manage-page .el-badge__content {
+  left: -7px;
+  right: initial;
+  top: 11px;
+}
+</style>
+
+<!--局部样式-->
+<style lang="scss" scoped>
+.layout-content {
+  .table-page-search-submitButtons {
     margin-top: -5px; /*与左侧输入框对齐*/
     margin-bottom: 20px;
   }
-
-}
-.el-badge{
-  .el-badge__content{
-    right: 100px !important;
-  }
-  sup{
-    right: 100px !important;
-    top:20px !important;
-  }
-}
-.el-badge >>> .el-badge__content{
-  right: 100px !important;
-
 }
 </style>
