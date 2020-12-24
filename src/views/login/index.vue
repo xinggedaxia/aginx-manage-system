@@ -10,7 +10,7 @@
     >
 
       <div class="title-container">
-        <h3 class="title">管理员登录</h3>
+        <h3 class="title">Aginx后台管理系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -24,7 +24,7 @@
           name="username"
           type="text"
           tabindex="1"
-          auto-complete="on"
+          auto-complete="off"
         />
       </el-form-item>
 
@@ -40,7 +40,7 @@
           placeholder="密码"
           name="password"
           tabindex="2"
-          auto-complete="on"
+          auto-complete="off"
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
@@ -48,7 +48,13 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button
+        :loading="loading"
+        type="primary"
+        style="width:100%;margin-bottom:30px;"
+        @click.native.prevent="handleLogin"
+      >登录
+      </el-button>
 
     </el-form>
   </div>
@@ -134,9 +140,9 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
+$bg: #283443;
+$light_gray: #fff;
+$cursor: rgba(0, 0, 0, 0.65);//文字颜色
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -146,23 +152,32 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+
+  .el-form-item {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .el-form-item__content {
+    background: $light_gray;
+  }
+
   .el-input {
     display: inline-block;
     height: 47px;
     width: 85%;
 
     input {
-      background: transparent;
       border: 0px;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      //color: $light_gray;
       height: 47px;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
+        box-shadow: 0 0 0px 1000px $light_gray inset !important;
         -webkit-text-fill-color: $cursor !important;
       }
     }
@@ -178,23 +193,33 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #fff;
 
 .login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  //background-color: $bg;
+  background: url("../../assets/images/loginBg.svg") no-repeat;
+  background-size: cover;
   overflow: hidden;
 
   .login-form {
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
+    margin-top: -150px;
+    padding: 30px 35px 0;
+    //border: 1px solid gray;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
   }
 
   .tips {
@@ -221,8 +246,8 @@ $light_gray:#eee;
     position: relative;
 
     .title {
-      font-size: 26px;
-      color: $light_gray;
+      font-size: 30px;
+      color: rgba(59,87,98);
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;

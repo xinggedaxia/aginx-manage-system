@@ -16,10 +16,8 @@ export function getInfo() {
 }
 
 export function logout() {
-  alert('from api/user:这儿要对接口')
-  return Promise.resolve()
-  // return request({
-  //   url: '/vue-admin-template/user/logout',
-  //   method: 'post'
-  // })
+  return request({
+    url: '/user/logout.do',
+    method: 'get'
+  })
 }

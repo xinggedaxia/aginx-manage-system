@@ -7,12 +7,12 @@
 
             <!--基本搜索条件/最多放两个-->
             <el-col :md="8" :sm="24">
-              <el-form-item label="用户名">
+              <el-form-item label="用户名:">
                 <el-input v-model="listQuery.user" placeholder="用户名" />
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
-              <el-form-item label="账号状态">
+              <el-form-item label="账号状态:">
                 <el-select v-model="listQuery.status" placeholder="账号状态">
                   <el-option label="启用" value="shanghai" />
                   <el-option label="冻结" value="beijing" />
@@ -23,17 +23,17 @@
             <!--高级搜索条件-->
             <template v-if="advanced">
               <el-col :md="8" :sm="24">
-                <el-form-item label="条件1">
+                <el-form-item label="条件1:">
                   <el-input v-model="listQuery.user" placeholder="用户名" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
-                <el-form-item label="条件2">
+                <el-form-item label="条件2:">
                   <el-input v-model="listQuery.user" placeholder="用户名" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
-                <el-form-item label="条件3">
+                <el-form-item label="条件3:">
                   <el-input v-model="listQuery.user" placeholder="用户名" />
                 </el-form-item>
               </el-col>
@@ -67,12 +67,12 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="用户名" prop="name" />
+        <el-table-column label="用户名" prop="adminName" />
         <el-table-column label="权限" prop="role" />
-        <el-table-column v-slot="{row}" label="状态" prop="status">
-          <el-badge is-dot :type="row.status===0?'danger':'success'">{{ row.status|statusFilter }}</el-badge>
+        <el-table-column v-slot="{row}" label="状态" prop="adminStatus">
+          <el-badge is-dot :type="row.adminStatus===0?'danger':'success'">{{ row.adminStatus|statusFilter }}</el-badge>
         </el-table-column>
-        <el-table-column label="备注" prop="desc" />
+        <el-table-column label="用户qq" prop="adminQq" />
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
@@ -80,13 +80,13 @@
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <el-button v-if="row.status!=0" size="mini" type="warning" @click="handleModifyStatus(row,'published')">
+            <el-button v-if="row.adminStatus==1" size="mini" type="warning" @click="handleModifyStatus(row,'published')">
               停用
             </el-button>
-            <el-button v-if="row.status!=1" size="mini" type="success" @click="handleModifyStatus(row,'draft')">
+            <el-button v-if="row.adminStatus!=1" size="mini" type="success" @click="handleModifyStatus(row,'draft')">
               启用
             </el-button>
-            <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+            <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
               删除
             </el-button>
           </template>
@@ -165,76 +165,15 @@ export default {
   filters: {
     statusFilter: function(status) {
       const statusMap = {
-        0: '停用',
-        1: '启用'
+        1: '启用',
+        2: '停用'
       }
       return statusMap[status]
     }
   },
   data() {
     return {
-      list: [
-        {
-          name: 'xingge',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 1
-        },
-        {
-          name: '强哥',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 0
-        },
-        {
-          name: 'xingge',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 1
-        },
-        {
-          name: '强哥',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 0
-        },
-        {
-          name: 'xingge',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 1
-        },
-        {
-          name: '强哥',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 0
-        },
-        {
-          name: 'xingge',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 1
-        },
-        {
-          name: '强哥',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 0
-        },
-        {
-          name: 'xingge',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 1
-        },
-        {
-          name: '强哥',
-          role: 'admin',
-          desc: new Date().toLocaleString(),
-          status: 0
-        }
-      ], // 表格数据
+      list: [], // 表格数据
       total: 0,
       listLoading: true, // 表格加载状态
       listQuery: {
@@ -248,10 +187,10 @@ export default {
       advanced: false, // 是否展开高级搜索条件
       statusOptions: ['published', 'draft', 'deleted'],
       temp: {
-        name: '强哥',
-        role: 'admin',
-        desc: '捞的淌口水哦',
-        status: 0
+        'adminName': '',
+        'adminQq': '',
+        'role': 0,
+        'adminStatus': 0
       }, // 存储新增和编辑框的数据
       textMap: {
         update: '编辑',
@@ -271,26 +210,21 @@ export default {
   },
   methods: {
     getList() {
-      // setTimeout中使用function this指向window !!!
       this.listLoading = true
-      setTimeout(() => {
+      fetchList(this.listQuery).then(response => {
+        console.log(response)
+        this.list = response.data
+        // fixme:后端没返回total，无法分页
+        // this.total = response.data.total
         this.listLoading = false
-      }, 500)
-      // fetchList(this.listQuery).then(response => {
-      //   this.list = response.data.items
-      //   this.total = response.data.total
-      //   this.listLoading = false
-      // })
+      })
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
+        'adminName': 'wuq1',
+        'adminQq': '2543279278',
+        'role': 0,
+        'adminStatus': 1
       }
     },
     handleCreate() {
@@ -365,19 +299,22 @@ export default {
 
 <!--全局样式-->
 <style>
-.account-manage-page .el-badge {
-  padding-left: 15px;
-}
 
-.account-manage-page .el-badge__content {
-  left: -7px;
-  right: initial;
-  top: 11px;
-}
 </style>
 
 <!--局部样式-->
 <style lang="scss" scoped>
+
+.account-manage-page .el-badge {
+  padding-left: 15px;
+}
+
+.account-manage-page ::v-deep.el-badge__content {
+  left: -7px;
+  right: initial;
+  top: 11px;
+}
+
 .layout-content {
   .table-page-search-submitButtons {
     margin-top: -5px; /*与左侧输入框对齐*/

@@ -38,7 +38,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -48,16 +48,10 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 10000) {
-      Message({
-        message: res.msg || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 403) {
+    // 捕获账号异常
+    if (res.code === 401 || res.code === 403) {
+      // 重新刷新页面（无用户信息）异常会被permission.js捕获，直接跳转到登陆页，此时无需弹窗
+      if (store.getters.name) {
         // to re-login
         MessageBox.confirm('你已经被登出, 你可以点击取消留在这个界面, 或者重新登录', '确认登出?', {
           confirmButtonText: '重新登录',
@@ -68,7 +62,19 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+      } else {
+        Message({
+          message: '身份过期，请重新登录',
+          type: 'error',
+          duration: 5 * 1000
+        })
       }
+    } else if (res.code !== 10000) { // 10000表示成功
+      Message({
+        message: res.msg || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
       console.log('ResError', res)
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
