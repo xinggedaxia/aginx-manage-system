@@ -127,6 +127,30 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/flag-manage',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'FlagManage',
+        component: () => import('@/views/flag-manage'),
+        meta: { title: '标识管理', icon: 'el-icon-document' }
+      }
+    ]
+  },
+  {
+    path: '/create-form',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'CreateForm',
+        component: () => import('@/views/create-form'),
+        meta: { title: '生成表单', icon: 'el-icon-document' }
+      }
+    ]
+  },
+  {
     path: 'external-link',
     component: Layout,
     children: [

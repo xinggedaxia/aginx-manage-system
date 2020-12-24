@@ -1,3 +1,4 @@
+const mainTemp = `
 <template>
   <div class="layout-content account-manage-page">
     <el-card class="box-card">
@@ -321,3 +322,8 @@ export default {
   }
 }
 </style>
+`
+
+export default {
+  mainTemp
+}
