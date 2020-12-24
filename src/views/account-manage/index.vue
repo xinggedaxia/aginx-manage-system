@@ -80,7 +80,12 @@
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <el-button v-if="row.adminStatus==1" size="mini" type="warning" @click="handleModifyStatus(row,'published')">
+            <el-button
+              v-if="row.adminStatus==1"
+              size="mini"
+              type="warning"
+              @click="handleModifyStatus(row,'published')"
+            >
               停用
             </el-button>
             <el-button v-if="row.adminStatus!=1" size="mini" type="success" @click="handleModifyStatus(row,'draft')">
@@ -215,6 +220,8 @@ export default {
         this.list = response.data
         // fixme:后端没返回total，无法分页
         // this.total = response.data.total
+        this.listLoading = false
+      }).catch(() => {
         this.listLoading = false
       })
     },

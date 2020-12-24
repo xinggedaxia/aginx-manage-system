@@ -18,6 +18,9 @@
             <el-table-column v-slot="{row}" label="显示名称" prop="label">
               <el-input v-model="row.label" placeholder="请输入" />
             </el-table-column>
+            <el-table-column v-slot="{row}" label="启用过滤" prop="needFilter">
+              <el-checkbox v-model="row.needFilter" />
+            </el-table-column>
 
             <el-table-column v-slot="{row}" label="搜索条件" prop="forSearch">
               <el-checkbox v-model="row.forSearch" @change="handleForSearchChange(row,$event)" />
@@ -51,7 +54,8 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="copyBtn" :data-clipboard-text="renderCode">生成代码</el-button>
+          <el-button type="primary" @click="createCode">生成代码</el-button>
+          <el-button type="primary" class="copyBtn" :data-clipboard-text="renderCode">复制</el-button>
         </el-form-item>
       </el-form>
 
@@ -61,8 +65,7 @@
 
 <script>
 import Clipboard from 'clipboard'
-import tools from './template'
-console.log(tools)
+import  startRender from './template'
 export default {
   name: 'CreateForm',
   data() {
@@ -85,7 +88,7 @@ export default {
       ],
       formButtons: ['search', 'add', 'reset'],
       tableButtons: ['edit', 'delete'],
-      renderCode: tools.mainTemp
+      renderCode: ''
     }
   },
   created() {
@@ -95,7 +98,8 @@ export default {
     const btnCopy = new Clipboard('.copyBtn')
     // 复制成功后执行的回调函数
     btnCopy.on('success', (e) => {
-      this.$message('生成成功，已复制到剪切板')
+      this.$message('已复制到剪切板')
+
     })
   },
   methods: {
@@ -118,6 +122,7 @@ export default {
           stringName,
           use: true,
           label: stringName,
+          needFilter:false,
           forSearch: false,
           formType: ''
         })
@@ -141,6 +146,19 @@ export default {
     handleFormTypeChange(row) {
       row.forSearch = true
       row.use = true
+    },
+    createCode(){
+      try {
+        this.renderCode = startRender({
+          tableData:this.tableData,
+          formButtons:this.formButtons,
+          tableButtons:this.tableButtons
+        })
+        this.$message({ type: 'success', message: '生成成功' })
+      }catch (e){
+        console.log(e);
+        this.$message({ type: 'error', message: '生成失败' })
+      }
     }
   }
 }
