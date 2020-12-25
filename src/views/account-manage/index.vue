@@ -1,6 +1,8 @@
 <template>
   <div class="layout-content account-manage-page">
     <el-card class="box-card">
+
+      <!--搜索栏-->
       <div class="table-page-search-wrapper">
         <el-form :inline="true" :model="listQuery" label-width="80px" size="small">
           <el-row :gutter="48">
@@ -14,8 +16,8 @@
             <el-col :md="8" :sm="24">
               <el-form-item label="账号状态:">
                 <el-select v-model="listQuery.status" placeholder="账号状态">
-                  <el-option label="启用" value="shanghai" />
-                  <el-option label="冻结" value="beijing" />
+                  <el-option label="全部" value="" />
+                  <el-option v-for="{label,value} in statusList" :key="value" :label="label" :value="value" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -47,7 +49,7 @@
               >
                 <el-button type="primary" size="small" @click="getList">查询</el-button>
                 <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
-                <el-button size="small" @click="getList">重置</el-button>
+                <el-button size="small" @click="handleReset">重置</el-button>
                 <el-button type="text" @click="advanced=!advanced">
                   {{ advanced ? '收起' : '展开' }}
                   <i :class="advanced?'el-icon-arrow-up':'el-icon-arrow-down'" />
@@ -67,6 +69,8 @@
         highlight-current-row
         style="width: 100%;"
       >
+
+        <!--表格列-->
         <el-table-column label="用户名" prop="adminName" />
         <el-table-column label="权限" prop="role" />
         <el-table-column v-slot="{row}" label="状态" prop="adminStatus">
@@ -97,6 +101,7 @@
           </template>
         </el-table-column>
       </el-table>
+
       <!--分页-->
       <pagination
         v-show="list.length>0"
@@ -178,16 +183,22 @@ export default {
   },
   data() {
     return {
+      statusList: [
+        {
+          label: '启用',
+          value: '1'
+        },
+        {
+          label: '禁用',
+          value: '0'
+        }
+      ],
       list: [], // 表格数据
       total: 0,
       listLoading: true, // 表格加载状态
       listQuery: {
         page: 1,
-        limit: 10,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: '+id'
+        limit: 10
       }, // 查询条件
       advanced: false, // 是否展开高级搜索条件
       statusOptions: ['published', 'draft', 'deleted'],
@@ -232,6 +243,9 @@ export default {
         'role': 0,
         'adminStatus': 1
       }
+    },
+    handleReset() {
+
     },
     handleCreate() {
       this.resetTemp()
@@ -319,12 +333,5 @@ export default {
   left: -7px;
   right: initial;
   top: 11px;
-}
-
-.layout-content {
-  .table-page-search-submitButtons {
-    margin-top: -5px; /*与左侧输入框对齐*/
-    margin-bottom: 20px;
-  }
 }
 </style>

@@ -6,14 +6,28 @@
         <el-form-item label="初始数据:">
           <el-input v-model="initData" type="textarea" placeholder="placeholder" rows="5" @input="createTableData" />
         </el-form-item>
+        <el-form-item label="页面名称:">
+          <el-input v-model="pageName" placeholder="placeholder" />
+        </el-form-item>
         <el-form-item label="字段配置:">
           <el-table
             :data="tableData"
             style="width: 100%"
+            :border="true"
           >
             <el-table-column label="字段名称" prop="stringName" />
             <el-table-column v-slot="{row}" label="表格字段" prop="use">
               <el-checkbox v-model="row.use" @change="handleUseChange(row,$event)" />
+            </el-table-column>
+            <el-table-column v-slot="{row}" label="字段类型" prop="variableType">
+              <el-select v-model="row.variableType" placeholder="字段类型">
+                <el-option
+                  v-for="item in variableTypeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </el-table-column>
             <el-table-column v-slot="{row}" label="显示名称" prop="label">
               <el-input v-model="row.label" placeholder="请输入" />
@@ -54,22 +68,36 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="createCode">生成代码</el-button>
-          <el-button type="primary" class="copyBtn" :data-clipboard-text="renderCode">复制</el-button>
+          <el-button type="primary" @click="createCode">复制</el-button>
+          <el-button type="primary" @click="previewCode">先复制-然后把代码手动整到previewCode-预览</el-button>
         </el-form-item>
-      </el-form>
 
+        <el-dialog title="效果预览" :visible.sync="showReview" :fullscreen="true">
+          <Test v-if="showReview" />
+        </el-dialog>
+        <!--用于存放代码，让剪切功能生效-->
+        <textarea
+          id="inputDom"
+          type="text"
+          :value="renderCode"
+          style="height: 1px;overflow:hidden;position:absolute;top:9999px"
+        />
+      </el-form>
     </el-card>
   </div>
 </template>
 
 <script>
 import Clipboard from 'clipboard'
-import  startRender from './template'
+import startRender from './index'
+import Test from './previewCode'
+
 export default {
   name: 'CreateForm',
+  components: { Test },
   data() {
     return {
+      showReview: false,
       initData: '{"id": "","name": "","age": "","sex": "" }',
       tableData: [],
       formTypeList: [
@@ -86,6 +114,21 @@ export default {
           value: 'date'
         }
       ],
+      variableTypeList: [
+        {
+          label: '字符串',
+          value: 'string'
+        },
+        {
+          label: '数字',
+          value: 'number'
+        },
+        {
+          label: '布尔',
+          value: 'bool'
+        }
+      ],
+      pageName: 'DemoPage',
       formButtons: ['search', 'add', 'reset'],
       tableButtons: ['edit', 'delete'],
       renderCode: ''
@@ -95,12 +138,14 @@ export default {
     this.createTableData()
   },
   mounted() {
-    const btnCopy = new Clipboard('.copyBtn')
+    this.clipboard = new Clipboard('.copyBtn')
     // 复制成功后执行的回调函数
-    btnCopy.on('success', (e) => {
+    this.clipboard.on('success', (e) => {
       this.$message('已复制到剪切板')
-
     })
+  },
+  beforeDestroy() {
+    this.clipboard.destroy()
   },
   methods: {
     createTableData() {
@@ -121,8 +166,9 @@ export default {
         this.tableData.push({
           stringName,
           use: true,
+          variableType: 'string',
           label: stringName,
-          needFilter:false,
+          needFilter: false,
           forSearch: false,
           formType: ''
         })
@@ -147,19 +193,38 @@ export default {
       row.forSearch = true
       row.use = true
     },
-    createCode(){
+    previewCode() {
+      this.showReview = true
+      this.createCode(false)
+    },
+    // 生成代码
+    createCode(copyCode) {
       try {
         this.renderCode = startRender({
-          tableData:this.tableData,
-          formButtons:this.formButtons,
-          tableButtons:this.tableButtons
+          pageName: this.pageName,
+          tableData: this.tableData,
+          formButtons: this.formButtons,
+          tableButtons: this.tableButtons
         })
-        this.$message({ type: 'success', message: '生成成功' })
-      }catch (e){
-        console.log(e);
-        this.$message({ type: 'error', message: '生成失败' })
+        if (copyCode !== false) {
+          this.$nextTick(() => {
+            this.copyToClip()
+          })
+        }
+        // this.$refs.copyBtn.$el.onclick()
+      } catch (e) {
+        console.log(e)
+        this.$message({ type: 'error', message: '代码生成失败' })
       }
+    },
+    // 复制到剪切板
+    copyToClip() {
+      const aux = document.querySelector('#inputDom')
+      aux.select()
+      document.execCommand('copy')
+      this.$message({ type: 'success', message: '代码已复制' })
     }
+
   }
 }
 </script>

@@ -84,4 +84,8 @@ div:focus {
       }
     }
   }
+  .table-page-search-submitButtons {
+    margin-top: -5px; /*与左侧输入框对齐*/
+    margin-bottom: 20px;
+  }
 }
