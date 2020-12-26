@@ -4,18 +4,20 @@ export default function(pageName, searchBar, table, dialog, filter, data, method
     return str.replace(hyphenateRE, '-$1').toLowerCase()
   }
 
-  return `<template>
+  return `
+<template>
   <div class="layout-content ${hyphenate(pageName)}">
     <el-card class="box-card">
         ${searchBar}
+        ${table}
     </el-card>
   </div>
 </template>
 
 <script>
-// fixme:替换为你的接口地址
-import { fetchList, createAccount, updateAccount } from '@/api/user.js'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+
+// import { fetchList, createAccount, updateAccount } from '@/api/${hyphenate(pageName)}.js' fixme:替换为你的接口地址
+import Pagination from '@/components/Pagination' // 分页
 
 export default {
   name: '${pageName}',
@@ -23,12 +25,12 @@ export default {
   ${filter}
   ${data}
   created() {
+    this.listLoading = false// fixme:对好接口后移除这行代码
     //this.getList()
   },
   ${method}
   }
 }
 </script>
-${style}
-`
+${style}`
 }

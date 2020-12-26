@@ -145,7 +145,7 @@ export const constantRoutes = [
       {
         path: '',
         name: 'CreateForm',
-        component: () => import('@/views/create-form'),
+        component: () => import('@/views/create-form/'),
         meta: { title: '生成表单', icon: 'el-icon-document' }
       }
     ]

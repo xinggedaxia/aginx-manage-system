@@ -10,14 +10,14 @@
             <!--基本搜索条件/最多放两个-->
             <el-col :md="8" :sm="24">
               <el-form-item label="用户名:">
-                <el-input v-model="listQuery.user" placeholder="用户名" />
+                <el-input v-model="listQuery.user" placeholder="用户名"/>
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
               <el-form-item label="账号状态:">
                 <el-select v-model="listQuery.status" placeholder="账号状态">
-                  <el-option label="全部" value="" />
-                  <el-option v-for="{label,value} in statusList" :key="value" :label="label" :value="value" />
+                  <el-option label="全部" value=""/>
+                  <el-option v-for="{label,value} in statusList" :key="value" :label="label" :value="value"/>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -26,17 +26,17 @@
             <template v-if="advanced">
               <el-col :md="8" :sm="24">
                 <el-form-item label="条件1:">
-                  <el-input v-model="listQuery.user" placeholder="用户名" />
+                  <el-input v-model="listQuery.user" placeholder="用户名"/>
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
                 <el-form-item label="条件2:">
-                  <el-input v-model="listQuery.user" placeholder="用户名" />
+                  <el-input v-model="listQuery.user" placeholder="用户名"/>
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
                 <el-form-item label="条件3:">
-                  <el-input v-model="listQuery.user" placeholder="用户名" />
+                  <el-input v-model="listQuery.user" placeholder="用户名"/>
                 </el-form-item>
               </el-col>
             </template>
@@ -52,7 +52,7 @@
                 <el-button size="small" @click="handleReset">重置</el-button>
                 <el-button type="text" @click="advanced=!advanced">
                   {{ advanced ? '收起' : '展开' }}
-                  <i :class="advanced?'el-icon-arrow-up':'el-icon-arrow-down'" />
+                  <i :class="advanced?'el-icon-arrow-up':'el-icon-arrow-down'"/>
                 </el-button>
               </div>
             </el-col>
@@ -71,12 +71,12 @@
       >
 
         <!--表格列-->
-        <el-table-column label="用户名" prop="adminName" />
-        <el-table-column label="权限" prop="role" />
+        <el-table-column label="用户名" prop="adminName"/>
+        <el-table-column label="权限" prop="role"/>
         <el-table-column v-slot="{row}" label="状态" prop="adminStatus">
           <el-badge is-dot :type="row.adminStatus===2?'danger':'success'">{{ row.adminStatus|statusFilter }}</el-badge>
         </el-table-column>
-        <el-table-column label="用户qq" prop="adminQq" />
+        <el-table-column label="用户qq" prop="adminQq"/>
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
@@ -95,9 +95,15 @@
             <el-button v-if="row.adminStatus!=1" size="mini" type="success" @click="handleModifyStatus(row,'draft')">
               启用
             </el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
-              删除
-            </el-button>
+            <el-popconfirm
+              title="确认删除吗？"
+              @confirm="handleDelete(row,$index)"
+              style="margin-left: 10px"
+            >
+              <el-button slot="reference" size="mini" type="danger">
+                删除
+              </el-button>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
@@ -122,7 +128,7 @@
           style="width: 400px; margin-left:50px;"
         >
           <el-form-item label="用户名" prop="name">
-            <el-input v-model="temp.name" placeholder="placeholder" />
+            <el-input v-model="temp.name" placeholder="placeholder"/>
           </el-form-item>
           <el-form-item label="权限" prop="role">
             <el-select v-model="temp.role" placeholder="placeholder">

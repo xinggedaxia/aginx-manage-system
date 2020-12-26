@@ -50,7 +50,7 @@ export default function(config) {
 
   return `data() {
     return {
-      list: [], // 表格数据
+      list: [{${variable.trim()}}], // 表格数据
       listLoading: true, // 表格加载状态
       listQuery: {
           page: 1,
@@ -62,12 +62,15 @@ export default function(config) {
           limit: 10,
           ${searchVariables.trim()}
       }, // 用于重置查询条件
-      total: 0,
+      total: 0,//总数据条数
       advanced: false, // 是否展开高级搜索条件
       ${optionLists.trim()}
-      temp: {
+      createFormData: {
         ${variable.trim()}
       }, // 存储新增和编辑框的数据
+      createFormDataTemp: {
+        ${variable.trim()}
+      }, // 用于重置新增的数据
       textMap: {
         update: '编辑',
         create: '新增'

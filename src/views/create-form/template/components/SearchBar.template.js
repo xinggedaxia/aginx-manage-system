@@ -22,6 +22,11 @@ export default function(config) {
     switch (type) {
       case 'input':
         return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" />`
+      case 'datePicker':
+        return `<el-date-picker
+                   v-model="listQuery.${stringName}"
+                    type="date"
+                    placeholder="选择日期"/>`
       case 'select':
         return `<el-select v-model="listQuery.${stringName}" placeholder="请选择${label}">
                   <el-option label="全部" value="" />
@@ -39,7 +44,7 @@ export default function(config) {
 
   needAdvance = searchArray.length > 2
 
-  // 查询项代码拼接
+  // 查询表单项代码拼接
   searchArray.forEach(({ stringName, label, formType }, index) => {
     if (index < 2) {
       searchFormItemsCode += renderCol(stringName, label, formType)
@@ -48,6 +53,7 @@ export default function(config) {
     }
   })
 
+  // 遍历并生成按钮
   for (const formButton of config.formButtons) {
     switch (formButton) {
       case 'search':
@@ -64,11 +70,11 @@ export default function(config) {
         break
       case 'export':
         searchButtonsCode += `
-        <el-button type="primary" size="small" >导出</el-button>`
+        <el-button type="primary" size="small" @click="handleDownload">导出</el-button>`
         break
       case 'custom':
         searchButtonsCode += `
-        <el-button type="primary" size="small">自定义</el-button>`
+        <el-button type="primary" size="small" @click="handleCustom">自定义</el-button>`
         break
       default:
         searchButtonsCode += `
@@ -91,7 +97,7 @@ export default function(config) {
       ${searchFormItemsCodeAdvance.trim()}
     </template>` : ''
 
-  }
+}
 
             <!--查询操作按钮-->
             <el-col :md="!advanced && 8 || 24" :sm="24">
@@ -105,7 +111,7 @@ export default function(config) {
   {{ advanced ? '收起' : '展开' }}
   <i :class="advanced?'el-icon-arrow-up':'el-icon-arrow-down'" />
   </el-button>` : ''
-  }
+}
               </div>
             </el-col>
           </el-row>

@@ -64,7 +64,8 @@
           <el-checkbox-group v-model="tableButtons">
             <el-checkbox label="edit">编辑</el-checkbox>
             <el-checkbox label="delete">删除</el-checkbox>
-            <el-checkbox label="custom">自定义</el-checkbox>
+            <el-checkbox label="toggle">切换</el-checkbox>
+            <el-checkbox label="custom_t">自定义</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item>
@@ -88,9 +89,8 @@
 </template>
 
 <script>
-import Clipboard from 'clipboard'
-import startRender from './index'
-import Test from './previewCode'
+import startRender from './template'
+import Test from './template/previewCode'
 
 export default {
   name: 'CreateForm',
@@ -110,8 +110,8 @@ export default {
           value: 'select'
         },
         {
-          label: '日期',
-          value: 'date'
+          label: '普通日期',
+          value: 'datePicker'
         }
       ],
       variableTypeList: [
@@ -136,16 +136,6 @@ export default {
   },
   created() {
     this.createTableData()
-  },
-  mounted() {
-    this.clipboard = new Clipboard('.copyBtn')
-    // 复制成功后执行的回调函数
-    this.clipboard.on('success', (e) => {
-      this.$message('已复制到剪切板')
-    })
-  },
-  beforeDestroy() {
-    this.clipboard.destroy()
   },
   methods: {
     createTableData() {
@@ -213,7 +203,6 @@ export default {
         }
         // this.$refs.copyBtn.$el.onclick()
       } catch (e) {
-        console.log(e)
         this.$message({ type: 'error', message: '代码生成失败' })
       }
     },
