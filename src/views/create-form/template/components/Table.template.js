@@ -100,8 +100,8 @@ export default function(config) {
       <pagination
         v-show="list.length>0"
         :total="list.length"
-        :page.sync="listQuery.page"
-        :limit.sync="listQuery.limit"
+        :page.sync="listQuery.pageNumber"
+        :limit.sync="listQuery.pageSize"
         @pagination="getList"
       />`
 }

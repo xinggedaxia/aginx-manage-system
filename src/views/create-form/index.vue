@@ -49,33 +49,38 @@
                 />
               </el-select>
             </el-table-column>
+            <el-table-column v-slot="{row}" label="必填项" prop="required">
+              <el-checkbox v-model="row.required" />
+            </el-table-column>
+            <el-table-column v-slot="{row}" label="禁止编辑" prop="disabled">
+              <el-checkbox v-model="row.disabled" />
+            </el-table-column>
+
           </el-table>
         </el-form-item>
         <el-form-item label="表单按钮:">
           <el-checkbox-group v-model="formButtons">
-            <el-checkbox label="search">查询</el-checkbox>
-            <el-checkbox label="add">新增</el-checkbox>
-            <el-checkbox label="reset">重置</el-checkbox>
-            <el-checkbox label="export">导出</el-checkbox>
-            <el-checkbox label="custom">自定义</el-checkbox>
+            <el-checkbox v-for="{label,value} in buttonTypeList" :key="value" :label="value">{{ label }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="表格操作列:">
           <el-checkbox-group v-model="tableButtons">
-            <el-checkbox label="edit">编辑</el-checkbox>
-            <el-checkbox label="delete">删除</el-checkbox>
-            <el-checkbox label="toggle">切换</el-checkbox>
-            <el-checkbox label="custom_t">自定义</el-checkbox>
+            <el-checkbox v-for="{label,value} in tableButtonTypeList" :key="value" :label="value">{{
+              label
+            }}
+            </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="createCode">复制</el-button>
-          <el-button type="primary" @click="previewCode">先复制-然后把代码手动整到previewCode-预览</el-button>
+        <el-form-item label="表单按几列展示:">
+          <el-input-number v-model="cols" style="width: 300px;" min="1" max="4" />
         </el-form-item>
-
-        <el-dialog title="效果预览" :visible.sync="showReview" :fullscreen="true">
-          <Test v-if="showReview" />
-        </el-dialog>
+        <br>
+        <br>
+        <br>
+        <el-form-item>
+          <el-button type="primary" @click="createCode">生成代码</el-button>
+        </el-form-item>
+        <br>
         <!--用于存放代码，让剪切功能生效-->
         <textarea
           id="inputDom"
@@ -84,6 +89,10 @@
           style="height: 1px;overflow:hidden;position:absolute;top:9999px"
         />
       </el-form>
+      <h2>
+        生成代码-然后把代码手动整到previewCode-这下面会呈现效果
+      </h2>
+      <Test />
     </el-card>
   </div>
 </template>
@@ -100,20 +109,7 @@ export default {
       showReview: false,
       initData: '{"id": "","name": "","age": "","sex": "" }',
       tableData: [],
-      formTypeList: [
-        {
-          label: '输入框',
-          value: 'input'
-        },
-        {
-          label: '下拉框',
-          value: 'select'
-        },
-        {
-          label: '普通日期',
-          value: 'datePicker'
-        }
-      ],
+      // 字段类型
       variableTypeList: [
         {
           label: '字符串',
@@ -128,9 +124,72 @@ export default {
           value: 'bool'
         }
       ],
+      // 表单类型
+      formTypeList: [
+        {
+          label: '输入框',
+          value: 'input'
+        },
+        {
+          label: '下拉框',
+          value: 'select'
+        },
+        {
+          label: '普通日期',
+          value: 'datePicker'
+        },
+        {
+          label: '文本域',
+          value: 'textarea'
+        }
+      ],
+      // 表单按钮类型
+      buttonTypeList: [
+        {
+          label: '重置',
+          value: 'reset'
+        },
+        {
+          label: '查询',
+          value: 'search'
+        },
+        {
+          label: '新增',
+          value: 'add'
+        },
+
+        {
+          label: '导出',
+          value: 'export'
+        },
+        {
+          label: '自定义',
+          value: 'custom'
+        }
+      ],
+      // 表格按钮类型
+      tableButtonTypeList: [
+        {
+          label: '编辑',
+          value: 'edit'
+        },
+        {
+          label: '删除',
+          value: 'delete'
+        },
+        {
+          label: '切换',
+          value: 'toggle'
+        },
+        {
+          label: '自定义',
+          value: 'custom_t'
+        }
+      ],
       pageName: 'DemoPage',
-      formButtons: ['search', 'add', 'reset'],
+      formButtons: ['reset', 'search', 'add'],
       tableButtons: ['edit', 'delete'],
+      cols: 1, // 表单几列显示
       renderCode: ''
     }
   },
@@ -160,7 +219,9 @@ export default {
           label: stringName,
           needFilter: false,
           forSearch: false,
-          formType: ''
+          formType: 'input',
+          required: false,
+          disabled: false
         })
       }
     },
@@ -180,7 +241,6 @@ export default {
       }
     },
     handleFormTypeChange(row) {
-      row.forSearch = true
       row.use = true
     },
     previewCode() {
@@ -194,7 +254,8 @@ export default {
           pageName: this.pageName,
           tableData: this.tableData,
           formButtons: this.formButtons,
-          tableButtons: this.tableButtons
+          tableButtons: this.tableButtons,
+          cols: this.cols
         })
         if (copyCode !== false) {
           this.$nextTick(() => {

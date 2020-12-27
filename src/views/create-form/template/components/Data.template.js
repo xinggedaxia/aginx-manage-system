@@ -1,4 +1,3 @@
-
 export default function(config) {
   let variable = ''
   let searchVariables = ''
@@ -53,13 +52,13 @@ export default function(config) {
       list: [{${variable.trim()}}], // 表格数据
       listLoading: true, // 表格加载状态
       listQuery: {
-          page: 1,
-          limit: 10,
+          pageNumber: 1,
+          pageSize: 10,
           ${searchVariables.trim()}
       }, // 查询条件
       listQueryTemp: {
-          page: 1,
-          limit: 10,
+          pageNumber: 1,
+          pageSize: 10,
           ${searchVariables.trim()}
       }, // 用于重置查询条件
       total: 0,//总数据条数
@@ -71,6 +70,7 @@ export default function(config) {
       createFormDataTemp: {
         ${variable.trim()}
       }, // 用于重置新增的数据
+      rules:{}, //新增和编辑框的规则
       textMap: {
         update: '编辑',
         create: '新增'

@@ -21,7 +21,9 @@ export default function(config) {
   const renderFormItem = function(stringName, label, type) {
     switch (type) {
       case 'input':
-        return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" />`
+        return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" @keyup.enter.native="getList" />`
+      case 'textarea':
+        return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" @keyup.enter.native="getList" />`
       case 'datePicker':
         return `<el-date-picker
                    v-model="listQuery.${stringName}"

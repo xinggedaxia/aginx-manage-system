@@ -4,42 +4,23 @@
 
       <!--搜索栏-->
       <div class="table-page-search-wrapper">
-        <el-form :inline="true" :model="listQuery" label-width="80px" size="small">
+        <el-form :inline="false" :model="listQuery" label-width="80px" size="small">
           <el-row :gutter="48">
 
             <!--基本搜索条件/最多放两个-->
             <el-col :md="8" :sm="24">
               <el-form-item label="用户名:">
-                <el-input v-model="listQuery.user" placeholder="用户名"/>
+                <el-input v-model="listQuery.name" placeholder="用户名" @keyup.enter.native="getList" />
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
               <el-form-item label="账号状态:">
                 <el-select v-model="listQuery.status" placeholder="账号状态">
-                  <el-option label="全部" value=""/>
-                  <el-option v-for="{label,value} in statusList" :key="value" :label="label" :value="value"/>
+                  <el-option label="全部" value="" />
+                  <el-option v-for="{label,value} in statusList" :key="value" :label="label" :value="value" />
                 </el-select>
               </el-form-item>
             </el-col>
-
-            <!--高级搜索条件-->
-            <template v-if="advanced">
-              <el-col :md="8" :sm="24">
-                <el-form-item label="条件1:">
-                  <el-input v-model="listQuery.user" placeholder="用户名"/>
-                </el-form-item>
-              </el-col>
-              <el-col :md="8" :sm="24">
-                <el-form-item label="条件2:">
-                  <el-input v-model="listQuery.user" placeholder="用户名"/>
-                </el-form-item>
-              </el-col>
-              <el-col :md="8" :sm="24">
-                <el-form-item label="条件3:">
-                  <el-input v-model="listQuery.user" placeholder="用户名"/>
-                </el-form-item>
-              </el-col>
-            </template>
 
             <!--查询操作按钮-->
             <el-col :md="!advanced && 8 || 24" :sm="24">
@@ -47,13 +28,9 @@
                 class="table-page-search-submitButtons"
                 :style="advanced && { float: 'right', overflow: 'hidden' } || {} "
               >
+                <el-button size="small" @click="handleReset">重置</el-button>
                 <el-button type="primary" size="small" @click="getList">查询</el-button>
                 <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
-                <el-button size="small" @click="handleReset">重置</el-button>
-                <el-button type="text" @click="advanced=!advanced">
-                  {{ advanced ? '收起' : '展开' }}
-                  <i :class="advanced?'el-icon-arrow-up':'el-icon-arrow-down'"/>
-                </el-button>
               </div>
             </el-col>
           </el-row>
@@ -71,12 +48,14 @@
       >
 
         <!--表格列-->
-        <el-table-column label="用户名" prop="adminName"/>
-        <el-table-column label="权限" prop="role"/>
+        <el-table-column label="用户名" prop="adminName" />
+        <el-table-column v-slot="{row}" label="权限" prop="role">
+          {{ row.role|roleFilter }}
+        </el-table-column>
         <el-table-column v-slot="{row}" label="状态" prop="adminStatus">
           <el-badge is-dot :type="row.adminStatus===2?'danger':'success'">{{ row.adminStatus|statusFilter }}</el-badge>
         </el-table-column>
-        <el-table-column label="用户qq" prop="adminQq"/>
+        <el-table-column label="用户qq" prop="adminQq" />
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
@@ -97,8 +76,8 @@
             </el-button>
             <el-popconfirm
               title="确认删除吗？"
-              @confirm="handleDelete(row,$index)"
               style="margin-left: 10px"
+              @confirm="handleDelete(row,$index)"
             >
               <el-button slot="reference" size="mini" type="danger">
                 删除
@@ -112,8 +91,8 @@
       <pagination
         v-show="list.length>0"
         :total="list.length"
-        :page.sync="listQuery.page"
-        :limit.sync="listQuery.limit"
+        :page.sync="listQuery.pageNumber"
+        :limit.sync="listQuery.pageNumber"
         @pagination="getList"
       />
 
@@ -128,7 +107,7 @@
           style="width: 400px; margin-left:50px;"
         >
           <el-form-item label="用户名" prop="name">
-            <el-input v-model="temp.name" placeholder="placeholder"/>
+            <el-input v-model="temp.name" placeholder="placeholder" />
           </el-form-item>
           <el-form-item label="权限" prop="role">
             <el-select v-model="temp.role" placeholder="placeholder">
@@ -185,6 +164,13 @@ export default {
         2: '停用'
       }
       return statusMap[status]
+    },
+    roleFilter: function(role) {
+      const roleMap = {
+        0: '管理员',
+        1: '游客'
+      }
+      return roleMap[role]
     }
   },
   data() {
@@ -195,17 +181,25 @@ export default {
           value: '1'
         },
         {
-          label: '禁用',
-          value: '0'
+          label: '停用',
+          value: '2'
         }
       ],
       list: [], // 表格数据
       total: 0,
       listLoading: true, // 表格加载状态
       listQuery: {
-        page: 1,
-        limit: 10
+        pageNumber: 1,
+        pageSize: 10,
+        name: '',
+        status: ''
       }, // 查询条件
+      listQueryTemp: {
+        pageNumber: 1,
+        pageSize: 10,
+        name: '',
+        status: ''
+      }, // 用于重置查询条件
       advanced: false, // 是否展开高级搜索条件
       statusOptions: ['published', 'draft', 'deleted'],
       temp: {
@@ -235,8 +229,7 @@ export default {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data
-        // fixme:后端没返回total，无法分页
-        // this.total = response.data.total
+        this.total = response.data.total
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -251,7 +244,10 @@ export default {
       }
     },
     handleReset() {
-
+      this.listQuery = { ...this.listQueryTemp }
+      this.$nextTick(() => {
+        this.getList()
+      })
     },
     handleCreate() {
       this.resetTemp()

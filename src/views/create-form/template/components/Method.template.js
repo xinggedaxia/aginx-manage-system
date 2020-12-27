@@ -3,20 +3,20 @@ export default function(config) {
 
   // 新增方法模板代码
   const createMethod = `
-    //点击新增按钮
+    // 点击新增按钮
     handleCreate() {
       this.resetCreateFormData()
-      this.dialogStatus = '新增'
+      this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    //重置新增表单数据
+    // 重置新增表单数据
     resetCreateFormData() {
       this.createFormData = { ...this.createFormDataTemp }
     },
-    //新增数据
+    // 新增数据
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -38,7 +38,7 @@ export default function(config) {
     // 点击编辑
     handleUpdate(row) {
       this.createFormData = { ...row } // copy obj
-      this.dialogStatus = '编辑'
+      this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -63,7 +63,7 @@ export default function(config) {
       })
     },`
   const deleteMethod = `
-    //删除数据
+    // 删除数据
     handleDelete(row, index) {
       deleteApi(row.id).then(() => {
           this.dialogFormVisible = false
@@ -77,7 +77,7 @@ export default function(config) {
         })
     },`
   const toggleMethod = `
-    //状态切换
+    // 状态切换
     handleToggle(row, index) {
       toggleApi(row.id).then(() => {
           this.dialogFormVisible = false
@@ -91,7 +91,7 @@ export default function(config) {
         })
     },`
   const resetQueryMethod = `
-    //重置搜索条件
+    // 重置搜索条件
     resetQuery() {
       this.listQuery = { ...this.listQueryTemp }
        this.$nextTick(() => {
@@ -100,7 +100,7 @@ export default function(config) {
     },`
 
   const downLoadMethod = `
-    //导出表格数据
+    // 导出表格数据
     handleDownload() {
         /* this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
@@ -115,7 +115,7 @@ export default function(config) {
         this.downloadLoading = false
       })*/
       },
-    //表格数据格式化
+    // 表格数据格式化
     formatJson(filterVal) {
       return this.list.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
@@ -126,12 +126,12 @@ export default function(config) {
    }))
 },`
   const customMethod = `
-     //自定义方法
+     // 自定义方法
      handleCustom(){
 
      },`
   const customMethodTable = `
-     //自定义表格方法
+     // 自定义表格方法
      handleTableCustom(){
 
      },`
@@ -178,7 +178,7 @@ export default function(config) {
 
   return `
   methods: {
-    //获取列表
+    // 获取列表
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {

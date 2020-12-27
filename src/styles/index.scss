@@ -65,25 +65,17 @@ div:focus {
 }
 
 //定制内容布局
-.layout-content{
+.layout-content {
   margin: 24px;
 }
 
 //定制搜索栏的样式
-.table-page-search-wrapper{
-  .el-form--inline{
-    .el-form-item{
-      display: flex;
-      margin-bottom: 24px;
-      margin-right: 0;
-      .el-form-item__content{
-        flex: 1;
-        .el-select{
-          width: 100%;
-        }
-      }
-    }
+.table-page-search-wrapper {
+
+  .el-select {
+    width: 100%;
   }
+
   .table-page-search-submitButtons {
     margin-top: -5px; /*与左侧输入框对齐*/
     margin-bottom: 20px;

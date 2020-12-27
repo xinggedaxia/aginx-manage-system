@@ -10,6 +10,7 @@ export default function(pageName, searchBar, table, dialog, filter, data, method
     <el-card class="box-card">
         ${searchBar}
         ${table}
+        ${dialog}
     </el-card>
   </div>
 </template>

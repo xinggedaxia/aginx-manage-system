@@ -4,9 +4,10 @@ export function fetchList(data) {
   return request({
     url: '/user/getUserList.do',
     method: 'get',
-    data
+    params: data
   })
 }
+
 export function createAccount(data) {
   // return request({
   //   url: '/user/login.do',
@@ -14,6 +15,7 @@ export function createAccount(data) {
   //   data
   // })
 }
+
 export function updateAccount(data) {
   // return request({
   //   url: '/user/login.do',
