@@ -29,7 +29,7 @@ export default function(config) {
               type: 'success',
               duration: 2000
             })
-          }).cache((e) => {
+          }).catch((e) => {
             console.log(e)
           })
         }
@@ -60,7 +60,7 @@ export default function(config) {
               type: 'success',
               duration: 2000
             })
-          }).cache((e) => {
+          }).catch((e) => {
             console.log(e)
           })
         }
@@ -81,7 +81,7 @@ export default function(config) {
             type: 'success',
             duration: 2000
           })
-        }).cache((e) => {
+        }).catch((e) => {
             console.log(e)
           })
     },`
@@ -97,7 +97,7 @@ export default function(config) {
             type: 'success',
             duration: 2000
           })
-        }).cache((e) => {
+        }).catch((e) => {
             console.log(e)
           })
     },`

@@ -5,6 +5,9 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <span
+        style="line-height: 50px;color:#606266;font-size: 14px;margin-right: 20px"
+      >当前身份:{{ role === 0 ? '超级管理员' : role === 1 ? '管理员' : '游客' }}</span>
       <el-dropdown class="avatar-container" trigger="hover">
         <div class="avatar-wrapper">
           <img :src="avatar" class="user-avatar">
@@ -45,7 +48,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'name'
+      'name',
+      'role'
     ])
   },
   methods: {
@@ -89,7 +93,7 @@ export default {
     float: right;
     height: 100%;
     margin-right: 40px;
-
+    display: flex;
 
     &:focus {
       outline: none;
@@ -124,12 +128,13 @@ export default {
 
         .user-avatar {
           cursor: pointer;
-          width: 25px;
-          height: 25px;
+          width: 30px;
+          height: 30px;
           border-radius: 50%;
         }
 
         .user-name {
+          font-size: 16px;
           margin-left: 10px;
         }
 

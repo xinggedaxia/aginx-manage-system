@@ -115,7 +115,7 @@
           <el-form-item label="权限:" prop="role">
             <el-select v-model="temp.role" placeholder="placeholder">
               <el-option
-                v-for="item in [{label:'管理员',value:0},{label:'游客',value:1}]"
+                v-for="item in [{label:'超级管理员',value:0},{label:'管理员',value:1},{label:'游客',value:2}]"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -169,8 +169,9 @@ export default {
     },
     roleFilter: function(role) {
       const roleMap = {
-        0: '管理员',
-        1: '游客'
+        0: '超级管理员',
+        1: '管理员',
+        2: '游客'
       }
       return roleMap[role]
     }
@@ -207,8 +208,8 @@ export default {
       temp: {
         'adminName': '',
         'adminQq': '',
-        'role': 0,
-        'adminStatus': 0
+        'role': 2,
+        'adminStatus': 1
       }, // 存储新增和编辑框的数据
       textMap: {
         update: '编辑',
@@ -243,14 +244,16 @@ export default {
       this.temp = {
         'adminName': '',
         'adminQq': '',
-        'role': 0,
+        'role': 2,
         'adminStatus': 1
       }
     },
+    // 重置查询
     handleReset() {
       this.listQuery = { ...this.listQueryTemp }
       this.getList()
     },
+    // 点击新增
     handleCreate() {
       this.resetTemp()
       this.dialogStatus = 'create'
@@ -259,6 +262,7 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    // 新增数据
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -276,7 +280,7 @@ export default {
               type: 'success',
               duration: 2000
             })
-          }).cache((e) => {
+          }).catch((e) => {
             console.log(e)
           })
         }
@@ -307,7 +311,7 @@ export default {
               type: 'success',
               duration: 2000
             })
-          }).cache((e) => {
+          }).catch((e) => {
             console.log(e)
           })
         }
@@ -326,7 +330,7 @@ export default {
           type: 'success',
           duration: 2000
         })
-      }).cache((e) => {
+      }).catch((e) => {
         console.log(e)
       })
     }
