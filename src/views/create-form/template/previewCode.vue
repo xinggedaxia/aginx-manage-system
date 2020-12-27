@@ -4,7 +4,7 @@
 
       <!--搜索栏-->
       <div class="table-page-search-wrapper">
-        <el-form :inline="true" :model="listQuery" label-width="80px" size="small">
+        <el-form  :model="listQuery" label-width="80px" size="small">
           <el-row :gutter="48">
 
             <!--基本搜索条件-->
@@ -17,9 +17,9 @@
                 class="table-page-search-submitButtons"
                 :style="advanced && { float: 'right', overflow: 'hidden' } || {} "
               >
+                <el-button type="primary" size="small" @click="resetQuery">重置</el-button>
                 <el-button type="primary" size="small" @click="getList">查询</el-button>
                 <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
-                <el-button type="primary" size="small" @click="resetQuery">重置</el-button>
 
               </div>
             </el-col>
@@ -64,41 +64,31 @@
       <pagination
         v-show="list.length>0"
         :total="list.length"
-        :page.sync="listQuery.page"
-        :limit.sync="listQuery.limit"
+        :page.sync="listQuery.pageNumber"
+        :limit.sync="listQuery.pageSize"
         @pagination="getList"
       />
 
       <!--编辑新增共用弹窗-->
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" custom-class="demo-page-dialog">
+      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" custom-class="base-dialog demo-page-dialog">
         <el-form
           ref="dataForm"
           :rules="rules"
           :model="createFormData"
           label-width="70px"
         >
-          <el-row gutter="25">
-            <el-col :span="6">
-              <el-form-item label="id:">
-                <el-input v-model="listQuery.id" placeholder="请输入id" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="name:">
-                <el-input v-model="listQuery.name" placeholder="请输入name" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="age:">
-                <el-input v-model="listQuery.age" placeholder="请输入age" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="sex:">
-                <el-input v-model="listQuery.sex" placeholder="请输入sex" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <el-form-item label="id:" prop="id">
+            <el-input v-model="createFormData.id" placeholder="请输入id"  />
+          </el-form-item>
+          <el-form-item label="name:" prop="name">
+            <el-input v-model="createFormData.name" placeholder="请输入name"  />
+          </el-form-item>
+          <el-form-item label="age:" prop="age">
+            <el-input v-model="createFormData.age" placeholder="请输入age"  />
+          </el-form-item>
+          <el-form-item label="sex:" prop="sex">
+            <el-input v-model="createFormData.sex" placeholder="请输入sex"  />
+          </el-form-item>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -133,18 +123,20 @@ export default {
         sex: '',}], // 表格数据
       listLoading: true, // 表格加载状态
       listQuery: {
-        page: 1,
-        limit: 10,
+        pageNumber: 1,
+        pageSize: 10,
 
       }, // 查询条件
       listQueryTemp: {
-        page: 1,
-        limit: 10,
+        pageNumber: 1,
+        pageSize: 10,
 
       }, // 用于重置查询条件
       total: 0,//总数据条数
       advanced: false, // 是否展开高级搜索条件
+      optionGroup:{
 
+      }, // 存放选项的数据
       createFormData: {
         id: '',
         name: '',
@@ -157,7 +149,12 @@ export default {
         age: '',
         sex: '',
       }, // 用于重置新增的数据
-      rules:{}, //新增和编辑框的规则
+      rules:{
+        id: [{ required: true, message: '请输入id', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入name', trigger: 'blur' }],
+        age: [{ required: true, message: '请输入age', trigger: 'blur' }],
+        sex: [{ required: true, message: '请输入sex', trigger: 'blur' }],
+      }, //新增和编辑框的规则
       textMap: {
         update: '编辑',
         create: '新增'
@@ -182,6 +179,11 @@ export default {
       }).catch(() => {
         this.listLoading = false
       })
+    },
+    // 重置搜索条件
+    resetQuery() {
+      this.listQuery = { ...this.listQueryTemp }
+      this.getList()
     },
     // 点击新增按钮
     handleCreate() {
@@ -214,13 +216,6 @@ export default {
       })
     },
 
-    // 重置搜索条件
-    resetQuery() {
-      this.listQuery = { ...this.listQueryTemp }
-      this.$nextTick(() => {
-        this.getList()
-      })
-    },
     // 点击编辑
     handleUpdate(row) {
       this.createFormData = { ...row } // copy obj
@@ -252,6 +247,9 @@ export default {
     handleDelete(row, index) {
       deleteApi(row.id).then(() => {
         this.dialogFormVisible = false
+        if (this.list.length === 1 && this.listQuery.pageNumber !== 1) {
+          this.listQuery.pageNumber--
+        }
         this.getList()
         this.$notify({
           title: '成功',
@@ -268,7 +266,10 @@ export default {
 <!--局部样式-->
 <style lang="scss" scoped>
 .demo-page ::v-deep.demo-page-dialog{
+  max-width: 600px;
 
-  width: 1700px;
+  .el-dialog__body{
+    padding: 30px 40px;
+  }
 }
 </style>

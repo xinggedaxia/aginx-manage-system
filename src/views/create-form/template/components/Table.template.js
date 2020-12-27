@@ -98,9 +98,9 @@ export default function(config) {
       </el-table>
       <!--分页-->
       <pagination
-        v-show="list.length>0"
-        :total="list.length"
-        :page.sync="listQuery.pageNumber"
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.pageNum"
         :limit.sync="listQuery.pageSize"
         @pagination="getList"
       />`

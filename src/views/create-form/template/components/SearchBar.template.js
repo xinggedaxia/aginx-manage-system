@@ -21,9 +21,9 @@ export default function(config) {
   const renderFormItem = function(stringName, label, type) {
     switch (type) {
       case 'input':
-        return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" @keyup.enter.native="getList" />`
+        return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" @keyup.enter.native="handleSearch" />`
       case 'textarea':
-        return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" @keyup.enter.native="getList" />`
+        return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" @keyup.enter.native="handleSearch" />`
       case 'datePicker':
         return `<el-date-picker
                    v-model="listQuery.${stringName}"
@@ -32,7 +32,7 @@ export default function(config) {
       case 'select':
         return `<el-select v-model="listQuery.${stringName}" placeholder="请选择${label}">
                   <el-option label="全部" value="" />
-                  <el-option v-for="{label,value} in ${stringName}List" :key="value" :label="label" :value="value" />
+                  <el-option v-for="{label,value} in optionGroup.${stringName}List" :key="value" :label="label" :value="value" />
                 </el-select>`
       default:
         return `未被匹配，请到SearchBar.template.js配置`
@@ -60,7 +60,7 @@ export default function(config) {
     switch (formButton) {
       case 'search':
         searchButtonsCode += `
-        <el-button type="primary" size="small" @click="getList">查询</el-button>`
+        <el-button type="primary" size="small" @click="handleSearch">查询</el-button>`
         break
       case 'add':
         searchButtonsCode += `
@@ -87,7 +87,7 @@ export default function(config) {
   return `
     <!--搜索栏-->
         <div class="table-page-search-wrapper">
-        <el-form :inline="true" :model="listQuery" label-width="80px" size="small">
+        <el-form  :model="listQuery" label-width="80px" size="small">
           <el-row :gutter="48">
 
           <!--基本搜索条件-->

@@ -8,12 +8,12 @@ export function fetchList(data) {
   })
 }
 
-export function createAccount(data) {
-  // return request({
-  //   url: '/user/login.do',
-  //   method: 'post',
-  //   data
-  // })
+export function createApi(data) {
+  return request({
+    url: '/user/addUser.do',
+    method: 'post',
+    data
+  })
 }
 
 export function updateAccount(data) {

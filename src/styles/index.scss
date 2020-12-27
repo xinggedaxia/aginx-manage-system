@@ -69,10 +69,18 @@ div:focus {
   margin: 24px;
 }
 
-//定制搜索栏的样式
-.table-page-search-wrapper {
+//定制搜索栏和弹窗的样式
+.table-page-search-wrapper, .base-dialog {
 
   .el-select {
+    width: 100%;
+  }
+
+  .el-date-editor {
+    width: 100%;
+  }
+
+  .el-input-number {
     width: 100%;
   }
 

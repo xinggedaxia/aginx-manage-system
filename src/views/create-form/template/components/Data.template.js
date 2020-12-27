@@ -1,7 +1,8 @@
 export default function(config) {
   let variable = ''
   let searchVariables = ''
-  let optionLists = ''
+  let optionGroupLists = ''
+  let rules = ''
 
   config.tableData.forEach((item, index) => {
     if (item.use) {
@@ -29,9 +30,11 @@ export default function(config) {
       if (item.forSearch) {
         searchVariables += `
         ${item.stringName}: '',`
+      }
 
-        if (item.formType === 'select') {
-          optionLists += `
+      // 创建数据项
+      if (item.formType === 'select') {
+        optionGroupLists += `
           ${item.stringName}List: [
         {
           label: '条件1',
@@ -42,7 +45,26 @@ export default function(config) {
           value: '0'
         }
       ],`
+      }
+
+      // 创建表单校验规则
+      if (item.required) {
+        const triggerMap = {
+          'input': 'blur',
+          'textarea': 'blur',
+          'select': 'change',
+          'datePicker': 'change',
+          'number': 'change'
         }
+        const textMap = {
+          'input': '输入',
+          'textarea': '输入',
+          'select': '选择',
+          'datePicker': '选择',
+          'number': '输入'
+        }
+        rules += `
+        ${item.stringName}: [{ required: true, message: '请${textMap[item.formType] + item.label}', trigger: '${triggerMap[item.formType]}' }],`
       }
     }
   })
@@ -52,25 +74,29 @@ export default function(config) {
       list: [{${variable.trim()}}], // 表格数据
       listLoading: true, // 表格加载状态
       listQuery: {
-          pageNumber: 1,
+          pageNum: 1,
           pageSize: 10,
           ${searchVariables.trim()}
       }, // 查询条件
       listQueryTemp: {
-          pageNumber: 1,
+          pageNum: 1,
           pageSize: 10,
           ${searchVariables.trim()}
       }, // 用于重置查询条件
       total: 0,//总数据条数
       advanced: false, // 是否展开高级搜索条件
-      ${optionLists.trim()}
+      optionGroup:{
+        ${optionGroupLists.trim()}
+      }, // 存放选项的数据
       createFormData: {
         ${variable.trim()}
       }, // 存储新增和编辑框的数据
       createFormDataTemp: {
         ${variable.trim()}
       }, // 用于重置新增的数据
-      rules:{}, //新增和编辑框的规则
+      rules:{
+        ${rules.trim()}
+      }, //新增和编辑框的规则
       textMap: {
         update: '编辑',
         create: '新增'

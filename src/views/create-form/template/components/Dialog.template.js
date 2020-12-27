@@ -8,37 +8,40 @@ export default function(config) {
   }
 
   // 渲染col
-  const renderCol = function({ stringName, label, formType }) {
+  const renderCol = function({ stringName, label, formType, disabled }) {
     if (config.cols === 1) {
       return `
-              <el-form-item label="${label}:">
-                ${renderFormItem(stringName, label, formType)}
+              <el-form-item label="${label}:" prop="${stringName}">
+                ${renderFormItem(stringName, label, formType, disabled)}
               </el-form-item>`
     }
     return `
             <el-col :span="${24 / config.cols}">
-              <el-form-item label="${label}:">
-                ${renderFormItem(stringName, label, formType)}
+              <el-form-item label="${label}:" prop="${stringName}">
+                ${renderFormItem(stringName, label, formType, disabled)}
               </el-form-item>
             </el-col>`
   }
 
   // 渲染表单元素
-  const renderFormItem = function(stringName, label, type) {
+  const renderFormItem = function(stringName, label, type, disabled) {
     switch (type) {
       case 'input':
-        return `<el-input v-model="listQuery.${stringName}" placeholder="请输入${label}" />`
+        return `<el-input v-model="createFormData.${stringName}" placeholder="请输入${label}" ${disabled ? `:disabled="dialogStatus==='update'"` : ''} />`
+      case 'number':
+        return `<el-input-number v-model="createFormData.${stringName}" placeholder="请输入${label}" ${disabled ? `:disabled="dialogStatus==='update'"` : ''} />`
       case 'textarea':
-        return `<el-input type="textarea" v-model="listQuery.${stringName}" placeholder="请输入${label}" rows="2"/>`
+        return `<el-input type="textarea" v-model="createFormData.${stringName}" placeholder="请输入${label}" rows="2" ${disabled ? `:disabled="dialogStatus==='update'"` : ''}/>`
       case 'datePicker':
         return `<el-date-picker
-                   v-model="listQuery.${stringName}"
+                   v-model="createFormData.${stringName}"
                     type="date"
-                    placeholder="选择日期"/>`
+                    placeholder="选择日期"
+                    ${disabled ? `:disabled="dialogStatus==='update'"` : ''}
+                    />`
       case 'select':
-        return `<el-select v-model="listQuery.${stringName}" placeholder="请选择${label}">
-                  <el-option label="全部" value="" />
-                  <el-option v-for="{label,value} in ${stringName}List" :key="value" :label="label" :value="value" />
+        return `<el-select v-model="createFormData.${stringName}" placeholder="请选择${label}" ${disabled ? `:disabled="dialogStatus==='update'"` : ''} >
+                  <el-option v-for="{label,value} in optionGroup.${stringName}List" :key="value" :label="label" :value="value" />
                 </el-select>`
       default:
         return `未被匹配，请到SearchBar.template.js配置`
@@ -53,7 +56,7 @@ export default function(config) {
 
   return `
         <!--编辑新增共用弹窗-->
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" custom-class="${hyphenate(config.pageName)}-dialog">
+      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" custom-class="base-dialog ${hyphenate(config.pageName)}-dialog">
         <el-form
           ref="dataForm"
           :rules="rules"
@@ -61,7 +64,7 @@ export default function(config) {
           label-width="70px"
         >
           ${config.cols > 1
-    ? `<el-row gutter="25">
+    ? `<el-row :gutter="25">
                 ${formItemsCode.trim()}
             </el-row>`
     : formItemsCode.trim()

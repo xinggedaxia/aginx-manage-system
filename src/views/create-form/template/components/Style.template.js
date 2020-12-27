@@ -11,6 +11,9 @@ export default function(config) {
     .${hyphenate(config.pageName)} ::v-deep.${hyphenate(config.pageName)}-dialog{
       ${config.cols === 1 ? `max-width: 600px;` : ''}
       ${config.cols > 1 ? `width: ${500 + config.cols * 300}px;` : ''}
+        .el-dialog__body{
+          padding: 30px 40px;
+        }
     }
 </style>`
 }

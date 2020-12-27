@@ -67,6 +67,9 @@ export default function(config) {
     handleDelete(row, index) {
       deleteApi(row.id).then(() => {
           this.dialogFormVisible = false
+          if (this.list.length === 1 && this.listQuery.pageNumber !== 1) {
+            this.listQuery.pageNumber--
+          }
           this.getList()
           this.$notify({
             title: '成功',
@@ -94,9 +97,7 @@ export default function(config) {
     // 重置搜索条件
     resetQuery() {
       this.listQuery = { ...this.listQueryTemp }
-       this.$nextTick(() => {
-        this.getList()
-      })
+      this.getList()
     },`
 
   const downLoadMethod = `
@@ -178,8 +179,18 @@ export default function(config) {
 
   return `
   methods: {
+    //点击搜索
+    handleSearch() {
+      this.listQuery.pageNum = 1 //重置pageNum
+      this.getList()
+    },
     // 获取列表
-    getList() {
+    getList(resetPageNumber) {
+      //点击搜索需要将pageNum改为1
+      if (resetPageNumber) {
+        this.listQuery.pageNum = 1
+      }
+
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data

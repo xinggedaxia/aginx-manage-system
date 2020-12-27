@@ -10,7 +10,7 @@
             <!--基本搜索条件/最多放两个-->
             <el-col :md="8" :sm="24">
               <el-form-item label="用户名:">
-                <el-input v-model="listQuery.name" placeholder="用户名" @keyup.enter.native="getList" />
+                <el-input v-model="listQuery.name" placeholder="用户名" @keyup.enter.native="handleSearch" />
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
@@ -29,7 +29,7 @@
                 :style="advanced && { float: 'right', overflow: 'hidden' } || {} "
               >
                 <el-button size="small" @click="handleReset">重置</el-button>
-                <el-button type="primary" size="small" @click="getList">查询</el-button>
+                <el-button type="primary" size="small" @click="handleSearch">查询</el-button>
                 <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
               </div>
             </el-col>
@@ -89,38 +89,41 @@
 
       <!--分页-->
       <pagination
-        v-show="list.length>0"
-        :total="list.length"
-        :page.sync="listQuery.pageNumber"
-        :limit.sync="listQuery.pageNumber"
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.pageNum"
+        :limit.sync="listQuery.pageSize"
         @pagination="getList"
       />
 
       <!--编辑新增共用弹窗-->
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-dialog
+        :title="textMap[dialogStatus]"
+        :visible.sync="dialogFormVisible"
+        custom-class="count-manage-dialog base-dialog"
+      >
         <el-form
           ref="dataForm"
           :rules="rules"
           :model="temp"
           label-position="left"
           label-width="70px"
-          style="width: 400px; margin-left:50px;"
         >
-          <el-form-item label="用户名" prop="name">
-            <el-input v-model="temp.name" placeholder="placeholder" />
+          <el-form-item label="用户名:" prop="adminName">
+            <el-input v-model="temp.adminName" placeholder="输入用户名" :disabled="dialogStatus==='update'" />
           </el-form-item>
-          <el-form-item label="权限" prop="role">
+          <el-form-item label="权限:" prop="role">
             <el-select v-model="temp.role" placeholder="placeholder">
               <el-option
-                v-for="item in [{label:'管理员',value:'admin'},{label:'游客',value:'visitor'}]"
+                v-for="item in [{label:'管理员',value:0},{label:'游客',value:1}]"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="temp.status" placeholder="placeholder">
+          <el-form-item label="状态:" prop="adminStatus">
+            <el-select v-model="temp.adminStatus" placeholder="placeholder">
               <el-option
                 v-for="item in [{label:'启用',value:1},{label:'停用',value:2}]"
                 :key="item.value"
@@ -129,20 +132,19 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="描述" prop="timestamp">
+          <el-form-item label="qq:" prop="timestamp">
             <el-input
-              v-model="temp.desc"
-              type="textarea"
-              placeholder="placeholder"
+              v-model="temp.adminQq"
+              placeholder="输入qq"
             />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">
-            Cancel
+            取消
           </el-button>
           <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-            Confirm
+            确认
           </el-button>
         </div>
       </el-dialog>
@@ -151,7 +153,7 @@
 </template>
 
 <script>
-import { fetchList, createAccount, updateAccount } from '@/api/account'
+import { fetchList, createApi, updateAccount } from '@/api/account'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
@@ -189,13 +191,13 @@ export default {
       total: 0,
       listLoading: true, // 表格加载状态
       listQuery: {
-        pageNumber: 1,
+        pageNum: 1,
         pageSize: 10,
         name: '',
         status: ''
       }, // 查询条件
       listQueryTemp: {
-        pageNumber: 1,
+        pageNum: 1,
         pageSize: 10,
         name: '',
         status: ''
@@ -215,9 +217,7 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        adminName: [{ required: true, message: '请输入用户名', trigger: 'blur' }]
       }// 表单校验规则
     }
   },
@@ -225,11 +225,15 @@ export default {
     this.getList()
   },
   methods: {
+    handleSearch() {
+      this.listQuery.pageNum = 1
+      this.getList()
+    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data
-        this.total = response.data.total
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -237,17 +241,15 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        'adminName': 'wuq1',
-        'adminQq': '2543279278',
+        'adminName': '',
+        'adminQq': '',
         'role': 0,
         'adminStatus': 1
       }
     },
     handleReset() {
       this.listQuery = { ...this.listQueryTemp }
-      this.$nextTick(() => {
-        this.getList()
-      })
+      this.getList()
     },
     handleCreate() {
       this.resetTemp()
@@ -260,14 +262,17 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createAccount(this.temp).then(() => {
-            this.list.unshift(this.temp)
+          createApi({
+            name: this.temp.adminName,
+            qq: this.temp.adminQq,
+            role: this.temp.role,
+            status: this.temp.adminStatus
+          }).then(() => {
             this.dialogFormVisible = false
+            this.getList()
             this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
+              title: '成功',
+              message: '新增成功',
               type: 'success',
               duration: 2000
             })
@@ -277,7 +282,6 @@ export default {
     },
     // 点击编辑
     handleUpdate(row) {
-      console.log(row)
       this.temp = Object.assign({}, row) // copy obj
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
@@ -306,13 +310,19 @@ export default {
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
+      deleteApi(row.id).then(() => {
+        this.dialogFormVisible = false
+        if (this.list.length === 1 && this.listQuery.pageNum !== 1) {
+          this.listQuery.pageNum--
+        }
+        this.getList()
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
       })
-      this.list.splice(index, 1)
     }
 
   }
@@ -335,5 +345,13 @@ export default {
   left: -7px;
   right: initial;
   top: 11px;
+}
+
+.account-manage-page ::v-deep.count-manage-dialog {
+  max-width: 600px;
+
+  .el-dialog__body {
+    padding: 30px 40px;
+  }
 }
 </style>

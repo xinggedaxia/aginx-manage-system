@@ -72,7 +72,7 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="表单按几列展示:">
-          <el-input-number v-model="cols" style="width: 300px;" min="1" max="4" />
+          <el-input-number v-model="cols" style="width: 300px;" :min="1" :max="4" />
         </el-form-item>
         <br>
         <br>
@@ -141,6 +141,10 @@ export default {
         {
           label: '文本域',
           value: 'textarea'
+        },
+        {
+          label: '数字',
+          value: 'number'
         }
       ],
       // 表单按钮类型
