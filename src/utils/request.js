@@ -62,9 +62,10 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+        return Promise.reject(new Error(res.msg || 'Error'))
       } else {
         Message({
-          message: '身份过期，请重新登录',
+          message: res.msg || '身份过期，请重新登录',
           type: 'error',
           duration: 5 * 1000
         })

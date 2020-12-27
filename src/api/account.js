@@ -15,6 +15,13 @@ export function createApi(data) {
     data
   })
 }
+export function deleteApi(data) {
+  return request({
+    url: '/user/deleteUser.do',
+    method: 'post',
+    data
+  })
+}
 
 export function updateAccount(data) {
   // return request({

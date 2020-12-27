@@ -153,7 +153,7 @@
 </template>
 
 <script>
-import { fetchList, createApi, updateAccount } from '@/api/account'
+import { fetchList, createApi, updateAccount, deleteApi } from '@/api/account'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 export default {
@@ -276,6 +276,8 @@ export default {
               type: 'success',
               duration: 2000
             })
+          }).cache((e) => {
+            console.log(e)
           })
         }
       })
@@ -305,12 +307,14 @@ export default {
               type: 'success',
               duration: 2000
             })
+          }).cache((e) => {
+            console.log(e)
           })
         }
       })
     },
-    handleDelete(row, index) {
-      deleteApi(row.id).then(() => {
+    handleDelete(row) {
+      deleteApi({ adminId: row.adminId }).then(() => {
         this.dialogFormVisible = false
         if (this.list.length === 1 && this.listQuery.pageNum !== 1) {
           this.listQuery.pageNum--
@@ -322,6 +326,8 @@ export default {
           type: 'success',
           duration: 2000
         })
+      }).cache((e) => {
+        console.log(e)
       })
     }
 

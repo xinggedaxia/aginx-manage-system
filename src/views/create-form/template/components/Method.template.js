@@ -29,6 +29,8 @@ export default function(config) {
               type: 'success',
               duration: 2000
             })
+          }).cache((e) => {
+            console.log(e)
           })
         }
       })
@@ -58,6 +60,8 @@ export default function(config) {
               type: 'success',
               duration: 2000
             })
+          }).cache((e) => {
+            console.log(e)
           })
         }
       })
@@ -77,7 +81,9 @@ export default function(config) {
             type: 'success',
             duration: 2000
           })
-        })
+        }).cache((e) => {
+            console.log(e)
+          })
     },`
   const toggleMethod = `
     // 状态切换
@@ -91,7 +97,9 @@ export default function(config) {
             type: 'success',
             duration: 2000
           })
-        })
+        }).cache((e) => {
+            console.log(e)
+          })
     },`
   const resetQueryMethod = `
     // 重置搜索条件
@@ -185,12 +193,7 @@ export default function(config) {
       this.getList()
     },
     // 获取列表
-    getList(resetPageNumber) {
-      //点击搜索需要将pageNum改为1
-      if (resetPageNumber) {
-        this.listQuery.pageNum = 1
-      }
-
+    getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data
