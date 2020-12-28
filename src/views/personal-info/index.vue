@@ -29,7 +29,7 @@
           </div>
           <el-form v-if="showEditQq" ref="form" :inline="true" label-width="80px" size="small" style="height: 35px">
             <el-form-item>
-              <el-input v-model="newQq" placeholder="请输入新的qq" />
+              <el-input v-model="newQq" placeholder="请输入新的qq"/>
             </el-form-item>
             <el-form-item>
               <el-button @click="showEditQq=false">取消</el-button>
@@ -41,11 +41,54 @@
           <label>密码</label>
           <p style="margin-right: 10px">******</p>
           <div style="padding-top: 1px">
-            <el-button size="small" icon="el-icon-edit" @click="showEditPassword=true">修改</el-button>
+            <el-button size="small" icon="el-icon-edit" @click="handleEdit">修改</el-button>
           </div>
         </div>
       </div>
     </el-card>
+
+    <!--    修改密码弹窗-->
+    <el-dialog title="修改密码" :visible.sync="showModal" custom-class="base-dialog personal-info-page-dialog">
+      <el-form
+        ref="dataForm"
+        status-icon
+        :rules="rules"
+        :model="createFormData"
+        label-width="90px"
+        autocomplete="new-password"
+      >
+        <!--fixme:无法解决谷歌浏览器密码自动填充问题-->
+        <el-form-item label="原始密码:" prop="password">
+          <el-input
+            v-model="createFormData.password"
+            type="password"
+            placeholder="请输入原始密码"
+            autocomplete="new-password"
+          />
+        </el-form-item>
+        <el-form-item label="新密码:" prop="newPassword">
+          <el-input v-model="createFormData.newPassword" type="password" placeholder="请输入新密码" autocomplete="off"/>
+        </el-form-item>
+        <el-form-item label="确认密码:" prop="newPasswordConfirm">
+          <el-input
+            v-model="createFormData.newPasswordConfirm"
+            type="password"
+            placeholder="请输入确认密码"
+            autocomplete="off"
+          />
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showModal = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="updatePassword">
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -55,10 +98,54 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'PersonalInfo',
   data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入原密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码必须大于6位'))
+      } else {
+        callback()
+      }
+    }
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入新密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码必须大于6位'))
+      } else {
+        callback()
+      }
+    }
+    const validatePass3 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入新密码'))
+      } else if (value !== this.createFormData.newPassword) {
+        callback(new Error('两次输入密码不一致'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       imageUrl: '',
       showEditQq: false,
-      newQq: ''
+      newQq: '',
+      showModal: false,
+      createFormData: {
+        password: '',
+        newPassword: '',
+        newPasswordConfirm: ''
+      },
+      createFormDataTemp: {
+        password: '',
+        newPassword: '',
+        newPasswordConfirm: ''
+      },
+      rules: {
+        password: [{ validator: validatePass, trigger: 'blur' }],
+        newPassword: [{ validator: validatePass2, trigger: 'blur' }],
+        newPasswordConfirm: [{ validator: validatePass3, trigger: 'blur' }]
+      }
     }
   },
   computed: {
@@ -72,6 +159,25 @@ export default {
   methods: {
     updateQq() {
 
+    },
+    handleEdit() {
+      this.showModal = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].resetFields()
+      })
+    },
+    updatePassword() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const tempData = { ...this.createFormData }
+          updatePasswordApi(tempData).then(() => {
+            this.dialogFormVisible = false
+            this.$message.success('密码修改成功')
+          }).catch((e) => {
+            console.log(e)
+          })
+        }
+      })
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -104,6 +210,14 @@ export default {
   width: 1000px;
   margin-left: auto;
   margin-right: auto;
+
+  & ::v-deep.personal-info-page-dialog {
+    max-width: 600px;
+
+    .el-dialog__body {
+      padding: 30px 40px;
+    }
+  }
 
   .box-card {
     padding-left: 60px;

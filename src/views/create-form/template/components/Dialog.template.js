@@ -61,7 +61,7 @@ export default function(config) {
           ref="dataForm"
           :rules="rules"
           :model="createFormData"
-          label-width="70px"
+          label-width="90px"
         >
           ${config.cols > 1
     ? `<el-row :gutter="25">

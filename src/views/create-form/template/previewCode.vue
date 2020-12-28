@@ -17,9 +17,7 @@
                 class="table-page-search-submitButtons"
                 :style="advanced && { float: 'right', overflow: 'hidden' } || {} "
               >
-                <el-button type="primary" size="small" @click="resetQuery">重置</el-button>
-                <el-button type="primary" size="small" @click="getList">查询</el-button>
-                <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
+
 
               </div>
             </el-col>
@@ -36,35 +34,25 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="id" prop="id" />
-        <el-table-column label="name" prop="name" />
-        <el-table-column label="age" prop="age" />
-        <el-table-column label="sex" prop="sex" />
+        <el-table-column label="原始密码" prop="password" />
+        <el-table-column label="新密码" prop="newPassword" />
+        <el-table-column label="确认密码" prop="newPasswordConfirm" />
 
         <!--表格操作列-->
-        <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" width="90" class-name="small-padding fixed-width">
           <template v-slot="{row,$index}">
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <el-popconfirm
-              title="确认删除吗？"
-              @confirm="handleDelete(row,$index)"
-              style="margin-left:10px;"
-            >
-              <el-button slot="reference" size="mini" type="danger">
-                删除
-              </el-button>
-            </el-popconfirm>
           </template>
         </el-table-column>
 
       </el-table>
       <!--分页-->
       <pagination
-        v-show="list.length>0"
-        :total="list.length"
-        :page.sync="listQuery.pageNumber"
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.pageNum"
         :limit.sync="listQuery.pageSize"
         @pagination="getList"
       />
@@ -77,17 +65,14 @@
           :model="createFormData"
           label-width="70px"
         >
-          <el-form-item label="id:" prop="id">
-            <el-input v-model="createFormData.id" placeholder="请输入id"  />
+          <el-form-item label="原始密码:" prop="password">
+            <el-input v-model="createFormData.password" placeholder="请输入原始密码"  />
           </el-form-item>
-          <el-form-item label="name:" prop="name">
-            <el-input v-model="createFormData.name" placeholder="请输入name"  />
+          <el-form-item label="新密码:" prop="newPassword">
+            <el-input v-model="createFormData.newPassword" placeholder="请输入新密码"  />
           </el-form-item>
-          <el-form-item label="age:" prop="age">
-            <el-input v-model="createFormData.age" placeholder="请输入age"  />
-          </el-form-item>
-          <el-form-item label="sex:" prop="sex">
-            <el-input v-model="createFormData.sex" placeholder="请输入sex"  />
+          <el-form-item label="确认密码:" prop="newPasswordConfirm">
+            <el-input v-model="createFormData.newPasswordConfirm" placeholder="请输入确认密码"  />
           </el-form-item>
 
         </el-form>
@@ -117,18 +102,17 @@ export default {
   },
   data() {
     return {
-      list: [{id: '',
-        name: '',
-        age: '',
-        sex: '',}], // 表格数据
+      list: [{password: '',
+        newPassword: '',
+        newPasswordConfirm: '',}], // 表格数据
       listLoading: true, // 表格加载状态
       listQuery: {
-        pageNumber: 1,
+        pageNum: 1,
         pageSize: 10,
 
       }, // 查询条件
       listQueryTemp: {
-        pageNumber: 1,
+        pageNum: 1,
         pageSize: 10,
 
       }, // 用于重置查询条件
@@ -138,22 +122,19 @@ export default {
 
       }, // 存放选项的数据
       createFormData: {
-        id: '',
-        name: '',
-        age: '',
-        sex: '',
+        password: '',
+        newPassword: '',
+        newPasswordConfirm: '',
       }, // 存储新增和编辑框的数据
       createFormDataTemp: {
-        id: '',
-        name: '',
-        age: '',
-        sex: '',
+        password: '',
+        newPassword: '',
+        newPasswordConfirm: '',
       }, // 用于重置新增的数据
       rules:{
-        id: [{ required: true, message: '请输入id', trigger: 'blur' }],
-        name: [{ required: true, message: '请输入name', trigger: 'blur' }],
-        age: [{ required: true, message: '请输入age', trigger: 'blur' }],
-        sex: [{ required: true, message: '请输入sex', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入原始密码', trigger: 'blur' }],
+        newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+        newPasswordConfirm: [{ required: true, message: '请输入确认密码', trigger: 'blur' }],
       }, //新增和编辑框的规则
       textMap: {
         update: '编辑',
@@ -169,6 +150,11 @@ export default {
   },
 
   methods: {
+    //点击搜索
+    handleSearch() {
+      this.listQuery.pageNum = 1 //重置pageNum
+      this.getList()
+    },
     // 获取列表
     getList() {
       this.listLoading = true
@@ -180,42 +166,6 @@ export default {
         this.listLoading = false
       })
     },
-    // 重置搜索条件
-    resetQuery() {
-      this.listQuery = { ...this.listQueryTemp }
-      this.getList()
-    },
-    // 点击新增按钮
-    handleCreate() {
-      this.resetCreateFormData()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    // 重置新增表单数据
-    resetCreateFormData() {
-      this.createFormData = { ...this.createFormDataTemp }
-    },
-    // 新增数据
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          createApi(this.createFormData).then(() => {
-            this.dialogFormVisible = false
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '新增成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-
     // 点击编辑
     handleUpdate(row) {
       this.createFormData = { ...row } // copy obj
@@ -239,24 +189,10 @@ export default {
               type: 'success',
               duration: 2000
             })
+          }).catch((e) => {
+            console.log(e)
           })
         }
-      })
-    },
-    // 删除数据
-    handleDelete(row, index) {
-      deleteApi(row.id).then(() => {
-        this.dialogFormVisible = false
-        if (this.list.length === 1 && this.listQuery.pageNumber !== 1) {
-          this.listQuery.pageNumber--
-        }
-        this.getList()
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
       })
     },
   }
