@@ -164,9 +164,10 @@ export const constantRoutes = [
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
-
+var base = process.env.NODE_ENV === 'production'? '/manage/':'/'
 const createRouter = () => new Router({
   mode: 'history', // require service support
+  base: base,
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
