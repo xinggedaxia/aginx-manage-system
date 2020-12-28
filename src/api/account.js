@@ -24,9 +24,9 @@ export function deleteApi(data) {
 }
 
 export function updateAccount(data) {
-  // return request({
-  //   url: '/user/login.do',
-  //   method: 'post',
-  //   data
-  // })
+  return request({
+    url: '/user/updateUserInfo.do',
+    method: 'post',
+    data
+  })
 }

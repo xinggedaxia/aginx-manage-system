@@ -151,6 +151,19 @@ export const constantRoutes = [
     ]
   },
   {
+    hidden: true, // 不在侧边栏显示
+    path: '/personal-info',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'PersonalInfo',
+        component: () => import('@/views/personal-info'),
+        meta: { title: '个人资料', icon: 'el-icon-document' }
+      }
+    ]
+  },
+  {
     path: 'external-link',
     component: Layout,
     children: [
