@@ -57,6 +57,8 @@
       </el-button>
 
     </el-form>
+    <a href="http://aginx.cn/oauth/github/unifyAccountLogin.do" style="margin-top:40px">github登录</a>
+
   </div>
 </template>
 
