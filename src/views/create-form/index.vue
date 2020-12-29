@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-content account-manage-page">
+  <div class="layout-content create-form-page">
     <el-card class="box-card">
       <!--表单-->
       <el-form :inline="false" label-width="80px" size="small" label-position="top">
@@ -14,6 +14,7 @@
             :data="tableData"
             style="width: 100%"
             :border="true"
+            class="config-table"
           >
             <el-table-column label="字段名称" prop="stringName" />
             <el-table-column v-slot="{row}" label="表格字段" prop="use">
@@ -232,7 +233,6 @@ export default {
     handleUseChange(row, flag) {
       if (!flag) {
         row.forSearch = false
-        row.formType = ''
       }
     },
     handleForSearchChange(row, flag) {
@@ -240,8 +240,6 @@ export default {
         row.use = true
         row.forSearch = true
         row.formType = 'input'
-      } else {
-        row.formType = ''
       }
     },
     handleFormTypeChange(row) {
@@ -283,9 +281,26 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .line {
   text-align: center;
+}
+
+.config-table ::v-deep.el-table__row {
+
+  td {
+    padding: 0 !important;
+  }
+
+}
+
+.config-table {
+  .el-checkbox {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    height: 50px;
+  }
 }
 </style>
 

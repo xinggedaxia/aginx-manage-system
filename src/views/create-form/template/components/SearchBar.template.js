@@ -68,7 +68,7 @@ export default function(config) {
         break
       case 'reset':
         searchButtonsCode += `
-        <el-button type="primary" size="small" @click="resetQuery">重置</el-button>`
+        <el-button  size="small" @click="resetQuery">重置</el-button>`
         break
       case 'export':
         searchButtonsCode += `
