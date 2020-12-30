@@ -227,6 +227,38 @@ export default {
     this.getList()
   },
   methods: {
+    handleModifyStatus(params, type) {
+      let status = 1
+      if( type === 'published' ){
+        status = 2
+      } else {
+        status = 1
+      }
+      updateAccount({
+        adminId: params.adminId,
+        status
+      }).then((res) => {
+        if( res.code === 10000 ){
+          this.dialogFormVisible = false
+          this.getList()
+          this.$notify({
+            title: '成功',
+            message: '用户状态更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: '失败',
+            message: res.msg,
+            type: 'error',
+            duration: 2000
+          })
+        }
+      }).catch((e) => {
+        console.log(e)
+      })
+    },
     handleSearch() {
       this.listQuery.pageNum = 1
       this.getList()
@@ -301,15 +333,31 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = { ...this.temp }
-          updateAccount(tempData).then(() => {
-            this.dialogFormVisible = false
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '编辑成功',
-              type: 'success',
-              duration: 2000
-            })
+          console.log(tempData)
+          const updateData = {
+            adminId: tempData.adminId,
+            role: tempData.role,
+            status: tempData.adminStatus,
+            qq: tempData.adminQq
+          }
+          updateAccount(updateData).then((res) => {
+            if( res.code === 10000 ){
+              this.dialogFormVisible = false
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '更新数据成功',
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$notify({
+                title: '失败',
+                message: res.msg,
+                type: 'success',
+                duration: 2000
+              })
+            }
           }).catch((e) => {
             console.log(e)
           })
