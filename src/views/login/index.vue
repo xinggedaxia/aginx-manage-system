@@ -51,14 +51,19 @@
       <el-button
         :loading="loading"
         type="primary"
-        style="width:100%;margin-bottom:30px;"
+        style="width:100%;margin-bottom:0px;"
         @click.native.prevent="handleLogin"
       >登录
       </el-button>
-
+      <div class="third-account">
+        <span style="margin-right: 10px">第三方登录</span>
+        <a
+          href="http://aginx.cn/oauth/github/unifyAccountLogin.do?returnUrl=http://localhost:9528/"
+        >
+          <svg class="octicon octicon-mark-github v-align-middle" height="32" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+        </a>
+      </div>
     </el-form>
-    <a href="http://aginx.cn/oauth/github/unifyAccountLogin.do?returnUrl=http://localhost:9528/" style="margin-top:40px">github登录</a>
-    <!-- <a href="http://aginx.cn/oauth/github/unifyAccountLogin.do?returnUrl=http://aginx.cn/manage" style="margin-top:40px">github登录</a> -->
 
   </div>
 </template>
@@ -145,7 +150,7 @@ export default {
 
 $bg: #283443;
 $light_gray: #fff;
-$cursor: rgba(0, 0, 0, 0.65);//文字颜色
+$cursor: rgba(0, 0, 0, 0.65); //文字颜色
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -222,7 +227,7 @@ $light_gray: #fff;
     border-radius: 20px;
     background: rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
   }
 
   .tips {
@@ -250,7 +255,7 @@ $light_gray: #fff;
 
     .title {
       font-size: 30px;
-      color: rgba(59,87,98);
+      color: rgba(59, 87, 98);
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
@@ -266,5 +271,11 @@ $light_gray: #fff;
     cursor: pointer;
     user-select: none;
   }
+}
+.third-account{
+  display: flex;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
 }
 </style>
