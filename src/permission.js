@@ -56,6 +56,7 @@ router.beforeEach(async(to, from, next) => {
         store.commit('user/SET_TOKEN',tokenArr[1])
         setToken(tokenArr[1])
         await store.dispatch('user/getInfo')
+        location.search = ''
         next();
       }else{
         // other pages that do not have permission to access are redirected to the login page.

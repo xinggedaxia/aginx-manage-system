@@ -191,7 +191,7 @@ export const constantRoutes = [
 ]
 var base = process.env.NODE_ENV === 'production' ? '/manage/' : '/'
 const createRouter = () => new Router({
-  mode: 'history', // require service support
+  mode: 'hash', // require service support
   base: base,
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
