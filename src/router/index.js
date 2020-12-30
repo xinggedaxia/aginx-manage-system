@@ -87,6 +87,18 @@ export const constantRoutes = [
         name: 'QuestionsManage',
         component: () => import('@/views/questions-manage'),
         meta: { title: '题目管理', icon: 'form' }
+      },
+      {
+        path: 'add',
+        name: 'AddQuestion',
+        hidden: true, // 不在侧边栏显示
+        component: () => import('@/views/questions-manage/component/add-question')
+      },
+      {
+        path: 'edit',
+        name: 'EditQuestion',
+        hidden: true, // 不在侧边栏显示
+        component: () => import('@/views/questions-manage/component/edit-question')
       }
     ]
   },
@@ -177,7 +189,7 @@ export const constantRoutes = [
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
-var base = process.env.NODE_ENV === 'production'? '/manage/':'/'
+var base = process.env.NODE_ENV === 'production' ? '/manage/' : '/'
 const createRouter = () => new Router({
   mode: 'history', // require service support
   base: base,
