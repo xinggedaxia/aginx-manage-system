@@ -132,6 +132,8 @@ export default {
   },
   data() {
     return {
+      // id  type  user  role  ip  location operaType operation createdAt updatedAt
+
       list: [
         {
           username: 'xingge',

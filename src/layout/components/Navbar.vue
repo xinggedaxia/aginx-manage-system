@@ -3,7 +3,6 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
-
     <div class="right-menu">
       <span
         style="line-height: 50px;color:#606266;font-size: 14px;margin-right: 20px"
@@ -35,6 +34,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <div id="he-plugin-simple" />
   </div>
 </template>
 
@@ -56,6 +56,36 @@ export default {
       'role'
     ])
   },
+  mounted() {
+    window.WIDGET = {
+      CONFIG: {
+        'modules': '10234',
+        'background': 4,
+        'backgroundColor': 'FFFFFF',
+        'tmpColor': '606266',
+        'tmpSize': 14,
+        'cityColor': '606266',
+        'citySize': 14,
+        'aqiSize': 14,
+        'weatherIconSize': 24,
+        'alertIconSize': 18,
+        'padding': '10px 10px 10px 10px',
+        'shadow': '1',
+        'language': 'auto',
+        'borderRadius': 5,
+        'fixed': 'false',
+        'vertical': 'middle',
+        'horizontal': 'center',
+        'key': '101eb26387544d18967f6647ac9cdfe0'
+      }
+    };
+    (function(d) {
+      const script = d.getElementsByTagName('script')[0]
+      const newScript = d.createElement('script')
+      newScript.src = 'https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0'
+      script.parentNode.insertBefore(newScript, script)
+    })(document)
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
@@ -67,11 +97,26 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+#he-plugin-simple {
+  float: right;
+  width: 200px;
+  height: 50px;
 
+  .s-sticker div:last-child {
+    width: 0 !important;
+  }
+
+  div:last-child {
+    z-index: 9;
+  }
+}
+</style>
 <style lang="scss" scoped>
+
 .navbar {
   height: 50px;
-  overflow: hidden;
+  //overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
