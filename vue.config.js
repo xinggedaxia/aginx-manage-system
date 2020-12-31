@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
+const CompressionPlugin = require('compression-webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -49,14 +50,28 @@ module.exports = {
     // before: require('./mock/mock-server.js')
 
   },
-  configureWebpack: {
+  configureWebpack:(config) => {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
-    name: name,
-    resolve: {
-      alias: {
-        '@': resolve('src')
+    let obj = {
+      name: name,
+      resolve: {
+        alias: {
+          '@': resolve('src')
+        }
       }
+    }
+    if (process.env.NODE_ENV === 'production') {
+      config.mode = 'production'
+      return Object.assign({
+        plugins: [
+          new CompressionPlugin({
+            test: /\.js$|\.html$|\.css$|\.png$/,
+            threshold: 10240,
+            deleteOriginalAssets: false
+          })
+        ]
+      },obj)
     }
   },
   chainWebpack(config) {
