@@ -14,30 +14,6 @@
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
-              <el-form-item label="身份:">
-                <el-select v-model="listQuery.role" placeholder="请选择身份">
-                  <el-option label="全部" value="" />
-                  <el-option v-for="{label,value} in optionGroup.roleList" :key="value" :label="label" :value="value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :md="8" :sm="24">
-              <el-form-item label="操作模块:">
-                <el-select v-model="listQuery.type" placeholder="请选择操作模块">
-                  <el-option label="全部" value="" />
-                  <el-option v-for="{label,value} in optionGroup.roleList" :key="value" :label="label" :value="value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :md="8" :sm="24">
-              <el-form-item label="操作模块:">
-                <el-select v-model="listQuery.operationType" placeholder="请选择操作类型">
-                  <el-option label="全部" value="" />
-                  <el-option v-for="{label,value} in optionGroup.roleList" :key="value" :label="label" :value="value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :md="8" :sm="24">
               <el-form-item label="日期区间:">
                 <el-date-picker
                   v-model="operationTimeRange"
@@ -51,6 +27,49 @@
                 />
               </el-form-item>
             </el-col>
+            <!--高级搜索条件-->
+            <template v-if="advanced">
+              <el-col :md="8" :sm="24">
+                <el-form-item label="身份:">
+                  <el-select v-model="listQuery.role" placeholder="请选择身份">
+                    <el-option label="全部" value="" />
+                    <el-option
+                      v-for="{label,value} in optionGroup.roleList"
+                      :key="value"
+                      :label="label"
+                      :value="value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :md="8" :sm="24">
+                <el-form-item label="操作模块:">
+                  <el-select v-model="listQuery.type" placeholder="请选择操作模块">
+                    <el-option label="全部" value="" />
+                    <el-option
+                      v-for="{label,value} in optionGroup.roleList"
+                      :key="value"
+                      :label="label"
+                      :value="value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :md="8" :sm="24">
+                <el-form-item label="操作模块:">
+                  <el-select v-model="listQuery.operationType" placeholder="请选择操作类型">
+                    <el-option label="全部" value="" />
+                    <el-option
+                      v-for="{label,value} in optionGroup.roleList"
+                      :key="value"
+                      :label="label"
+                      :value="value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+            </template>
 
             <!--查询操作按钮-->
             <el-col :md="!advanced && 8 || 24" :sm="24">
@@ -58,9 +77,12 @@
                 class="table-page-search-submitButtons"
                 :style="advanced && { float: 'right', overflow: 'hidden' } || {} "
               >
-                <el-button type="primary" size="small" @click="handleSearch">查询</el-button>
                 <el-button size="small" @click="resetQuery">重置</el-button>
-
+                <el-button type="primary" size="small" @click="handleSearch">查询</el-button>
+                <el-button type="text" @click="advanced=!advanced">
+                  {{ advanced ? '收起' : '展开' }}
+                  <i :class="advanced?'el-icon-arrow-up':'el-icon-arrow-down'" />
+                </el-button>
               </div>
             </el-col>
           </el-row>
@@ -77,7 +99,7 @@
         style="width: 100%;"
       >
         <el-table-column label="用户名" prop="name" />
-        <el-table-column label="操作描述" prop="operation" />
+        <el-table-column label="操作描述" prop="operation" width="400" />
         <el-table-column label="操作类型" prop="operationType" />
         <el-table-column label="操作模块" prop="type" />
         <el-table-column label="操作日期" prop="createAt" />

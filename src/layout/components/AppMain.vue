@@ -21,7 +21,7 @@ export default {
     setInterval(function() {
       index = index++ % 12 + 1
       appMain.style.background = `center/cover url( ${require(`../../assets/images/yd${index}.${index <= 4 ? 'jpg' : 'png'}`)}) no-repeat`
-    }, 10000)
+    }, 100000)
   }
 }
 </script>
