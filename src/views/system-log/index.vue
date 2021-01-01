@@ -47,20 +47,7 @@
                   <el-select v-model="listQuery.type" placeholder="请选择操作模块">
                     <el-option label="全部" value="" />
                     <el-option
-                      v-for="{label,value} in optionGroup.roleList"
-                      :key="value"
-                      :label="label"
-                      :value="value"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :md="8" :sm="24">
-                <el-form-item label="操作模块:">
-                  <el-select v-model="listQuery.operationType" placeholder="请选择操作类型">
-                    <el-option label="全部" value="" />
-                    <el-option
-                      v-for="{label,value} in optionGroup.roleList"
+                      v-for="{label,value} in optionGroup.operaTypeList"
                       :key="value"
                       :label="label"
                       :value="value"
@@ -98,11 +85,17 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="用户名" prop="name" />
-        <el-table-column label="操作描述" prop="operation" width="400" />
-        <el-table-column label="操作类型" prop="operationType" />
-        <el-table-column label="操作模块" prop="type" />
-        <el-table-column label="操作日期" prop="createAt" />
+        <el-table-column label="用户名" prop="user" />
+        <el-table-column label="操作描述" prop="operation" width="400"/>
+        <el-table-column v-slot="{row}" label="操作类型" prop="operaType">
+         {{ row.operaType | operaTypeFilter }}
+        </el-table-column>
+        <el-table-column v-slot="{row}" label="操作模块" prop="type" >
+          {{ row.type | typeFilter }}
+        </el-table-column>
+        <el-table-column v-slot="{row}" label="操作日期" prop="createdAt">
+          {{ row.createdAt | createdAtFilter }}
+        </el-table-column>
         <el-table-column v-slot="{row}" label="身份" prop="role">
           {{ row.role | roleFilter }}
         </el-table-column>
@@ -131,6 +124,14 @@ export default {
   name: 'SystemLog',
   components: { Pagination },
   filters: {
+    typeFilter: function(role) {
+      const roleMap = {
+        1: '账号管理',
+        2: '登录登出',
+        3: '标识管理'
+      }
+      return roleMap[role]
+    },
     roleFilter: function(role) {
       const roleMap = {
         0: '超级管理员',
@@ -138,6 +139,20 @@ export default {
         2: '游客'
       }
       return roleMap[role]
+    },
+    operaTypeFilter: function(operaType) {
+      const operaTypeMap = {
+        1: '增加',
+        2: '删除',
+        3: '更新',
+        4: '账密登录',
+        5: 'github登录',
+        6: '退出登录'
+      }
+      return operaTypeMap[operaType]
+    },
+    createdAtFilter: function(createdAt) {
+      return new Date(createdAt).toLocaleString()
     }
   },
   data() {
@@ -170,14 +185,33 @@ export default {
       optionGroup: {
         roleList: [
           {
-            label: '条件1',
+            label: '超级管理员',
+            value: '0'
+          },
+          {
+            label: '管理员',
             value: '1'
           },
           {
-            label: '条件2',
-            value: '0'
+            label: '游客',
+            value: '2'
+          }
+        ],
+        operaTypeList: [
+          {
+            label: '账号管理',
+            value: '1'
+          },
+          {
+            label: '登录登出',
+            value: '2'
+          },
+          {
+            label: '标识管理',
+            value: '3'
           }
         ]
+
       }, // 存放选项的数据,
       pickerOptions: {
         shortcuts: [{
@@ -221,7 +255,7 @@ export default {
   },
   created() {
     this.listLoading = false
-    // this.getList()
+    this.getList()
   },
 
   methods: {
@@ -235,7 +269,7 @@ export default {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data
-        this.total = response.data.total
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false

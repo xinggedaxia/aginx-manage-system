@@ -185,6 +185,16 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: 'external-link',
+    component: Layout,
+    children: [
+      {
+        path: 'https://yapi.baidu.com/project/25354/interface/api',
+        meta: { title: '接口文档', icon: 'link' }
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
