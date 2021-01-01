@@ -229,7 +229,7 @@ export default {
   methods: {
     handleModifyStatus(params, type) {
       let status = 1
-      if( type === 'published' ){
+      if (type === 'published') {
         status = 2
       } else {
         status = 1
@@ -238,7 +238,7 @@ export default {
         adminId: params.adminId,
         status
       }).then((res) => {
-        if( res.code === 10000 ){
+        if (res.code === 10000) {
           this.dialogFormVisible = false
           this.getList()
           this.$notify({
@@ -341,7 +341,7 @@ export default {
             qq: tempData.adminQq
           }
           updateAccount(updateData).then((res) => {
-            if( res.code === 10000 ){
+            if (res.code === 10000) {
               this.dialogFormVisible = false
               this.getList()
               this.$notify({

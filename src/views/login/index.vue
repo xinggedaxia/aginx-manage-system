@@ -213,7 +213,8 @@ $light_gray: #fff;
   min-height: 100%;
   width: 100%;
   //background-color: $bg;
-  background: url("../../assets/images/loginBg.svg") no-repeat;
+  //background: url("../../assets/images/loginBg.svg") no-repeat;
+  background: url("../../assets/images/yd1.jpg") no-repeat;
   background-size: cover;
   overflow: hidden;
 

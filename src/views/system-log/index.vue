@@ -10,7 +10,7 @@
             <!--基本搜索条件-->
             <el-col :md="8" :sm="24">
               <el-form-item label="用户名:">
-                <el-input v-model="listQuery.username" placeholder="请输入用户名" @keyup.enter.native="handleSearch" />
+                <el-input v-model="listQuery.name" placeholder="请输入用户名" @keyup.enter.native="handleSearch" />
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
@@ -19,6 +19,36 @@
                   <el-option label="全部" value="" />
                   <el-option v-for="{label,value} in optionGroup.roleList" :key="value" :label="label" :value="value" />
                 </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :md="8" :sm="24">
+              <el-form-item label="操作模块:">
+                <el-select v-model="listQuery.type" placeholder="请选择操作模块">
+                  <el-option label="全部" value="" />
+                  <el-option v-for="{label,value} in optionGroup.roleList" :key="value" :label="label" :value="value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :md="8" :sm="24">
+              <el-form-item label="操作模块:">
+                <el-select v-model="listQuery.operationType" placeholder="请选择操作类型">
+                  <el-option label="全部" value="" />
+                  <el-option v-for="{label,value} in optionGroup.roleList" :key="value" :label="label" :value="value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :md="8" :sm="24">
+              <el-form-item label="日期区间:">
+                <el-date-picker
+                  v-model="operationTimeRange"
+                  type="daterange"
+                  align="right"
+                  unlink-panels
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :picker-options="pickerOptions"
+                />
               </el-form-item>
             </el-col>
 
@@ -46,14 +76,16 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="用户名" prop="username" />
+        <el-table-column label="用户名" prop="name" />
+        <el-table-column label="操作描述" prop="operation" />
+        <el-table-column label="操作类型" prop="operationType" />
+        <el-table-column label="操作模块" prop="type" />
+        <el-table-column label="操作日期" prop="createAt" />
         <el-table-column v-slot="{row}" label="身份" prop="role">
           {{ row.role | roleFilter }}
         </el-table-column>
         <el-table-column label="ip" prop="ip" />
         <el-table-column label="位置" prop="location" />
-        <el-table-column label="操作描述" prop="operation" />
-        <el-table-column label="操作日期" prop="operationTime" />
 
       </el-table>
       <!--分页-->
@@ -64,57 +96,13 @@
         :limit.sync="listQuery.pageSize"
         @pagination="getList"
       />
-
-      <!--编辑新增共用弹窗-->
-      <el-dialog
-        :title="textMap[dialogStatus]"
-        :visible.sync="dialogFormVisible"
-        custom-class="base-dialog system-log-dialog"
-      >
-        <el-form
-          ref="dataForm"
-          :rules="rules"
-          :model="createFormData"
-          label-width="90px"
-        >
-          <el-form-item label="用户名:" prop="username">
-            <el-input v-model="createFormData.username" placeholder="请输入用户名" />
-          </el-form-item>
-          <el-form-item label="身份:" prop="role">
-            <el-select v-model="createFormData.role" placeholder="请选择身份">
-              <el-option v-for="{label,value} in optionGroup.roleList" :key="value" :label="label" :value="value" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="ip:" prop="ip">
-            <el-input v-model="createFormData.ip" placeholder="请输入ip" />
-          </el-form-item>
-          <el-form-item label="位置:" prop="location">
-            <el-input v-model="createFormData.location" placeholder="请输入位置" />
-          </el-form-item>
-          <el-form-item label="操作描述:" prop="operation">
-            <el-input v-model="createFormData.operation" placeholder="请输入操作描述" />
-          </el-form-item>
-          <el-form-item label="操作日期:" prop="operationTime">
-            <el-input v-model="createFormData.operationTime" placeholder="请输入操作日期" />
-          </el-form-item>
-
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">
-            取消
-          </el-button>
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-            确认
-          </el-button>
-        </div>
-      </el-dialog>
     </el-card>
   </div>
 </template>
 
 <script>
 
-// import { fetchList, createAccount, updateAccount } from '@/api/system-log.js' fixme:替换为你的接口地址
+import { fetchList } from '@/api/system-log.js'
 import Pagination from '@/components/Pagination' // 分页
 
 export default {
@@ -134,36 +122,26 @@ export default {
     return {
       // id  type  user  role  ip  location operaType operation createdAt updatedAt
 
-      list: [
-        {
-          username: 'xingge',
-          role: 0,
-          ip: '192.168.1.1',
-          location: '四川成都',
-          operation: '新增题目:什么是html?',
-          operationTime: '2020-12:30 08:00:00'
-        },
-        {
-          username: 'xingge',
-          role: 0,
-          ip: '192.168.1.1',
-          location: '四川成都',
-          operation: '删除角色:visitor',
-          operationTime: '2020-12:30 08:00:00'
-        }
-      ], // 表格数据
+      list: [], // 表格数据
       listLoading: true, // 表格加载状态
       listQuery: {
         pageNum: 1,
         pageSize: 10,
+        type: '', // 搜索时传递  1：账号管理  2：登录登出 3：标识管理 。。。
+        operationType: '',
         username: '',
-        role: ''
+        role: '', // 0：超级管理员 1：管理员 2：游客
+        startAt: '',
+        endAt: ''
       }, // 查询条件
       listQueryTemp: {
         pageNum: 1,
         pageSize: 10,
+        type: '', // 搜索时传递  1：账号管理  2：登录登出 3：标识管理 。。。
         username: '',
-        role: ''
+        role: '', // 0：超级管理员 1：管理员 2：游客
+        startAt: '',
+        endAt: ''
       }, // 用于重置查询条件
       total: 0, // 总数据条数
       advanced: false, // 是否展开高级搜索条件
@@ -178,34 +156,49 @@ export default {
             value: '0'
           }
         ]
-      }, // 存放选项的数据
-      createFormData: {
-        username: '',
-        role: '',
-        ip: '',
-        location: '',
-        operation: '',
-        operationTime: ''
-      }, // 存储新增和编辑框的数据
-      createFormDataTemp: {
-        username: '',
-        role: '',
-        ip: '',
-        location: '',
-        operation: '',
-        operationTime: ''
-      }, // 用于重置新增的数据
-      rules: {}, // 新增和编辑框的规则
-      textMap: {
-        update: '编辑',
-        create: '新增'
-      }, // 弹出框标题
-      dialogFormVisible: false,
-      dialogStatus: ''
+      }, // 存放选项的数据,
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      }
+    }
+  },
+  computed: {
+    operationTimeRange: {
+      get: function() {
+        return [this.listQuery.startAt, this.listQuery.endAt]
+      },
+      set: function(newValues) {
+        this.listQuery.startAt = newValues[0]
+        this.listQuery.endAt = newValues[1]
+      }
     }
   },
   created() {
-    this.listLoading = false// fixme:对好接口后移除这行代码
+    this.listLoading = false
     // this.getList()
   },
 
