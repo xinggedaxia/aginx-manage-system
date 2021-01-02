@@ -48,7 +48,13 @@
       >
 
         <!--表格列-->
-        <el-table-column label="用户名" prop="adminName" />
+        <el-table-column v-slot="{row}" label="用户名" prop="adminName" width="250">
+          <img
+            :src="row.avatarUrl"
+            style="position:absolute;right:20px;top:6px;width: 40px;height: 40px;border-radius: 50%"
+          >
+          <span>{{ row.adminName }}</span>
+        </el-table-column>
         <el-table-column v-slot="{row}" label="权限" prop="role">
           {{ row.role|roleFilter }}
         </el-table-column>
@@ -123,7 +129,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="状态:" prop="adminStatus">
-            <el-select v-model="temp.adminStatus" placeholder="placeholder">
+            <el-select v-model="temp.adminStatus" placeholder="placeholder" :disabled="dialogStatus==='update'">
               <el-option
                 v-for="item in [{label:'启用',value:1},{label:'停用',value:2}]"
                 :key="item.value"
@@ -353,7 +359,9 @@ export default {
       })
     },
     handleDelete(row) {
+      this.listLoading = true
       deleteApi({ adminId: row.adminId }).then(() => {
+        this.listLoading = false
         this.dialogFormVisible = false
         if (this.list.length === 1 && this.listQuery.pageNum !== 1) {
           this.listQuery.pageNum--
@@ -366,6 +374,7 @@ export default {
           duration: 2000
         })
       }).catch((e) => {
+        this.listLoading = false
         console.log(e)
       })
     }

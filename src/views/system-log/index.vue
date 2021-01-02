@@ -85,7 +85,13 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="用户名" prop="user" />
+        <el-table-column v-slot="{row}" label="用户名" prop="user" width="250">
+          <img
+            :src="row.avatarUrl"
+            style="position:absolute;right:20px;top:6px;width: 40px;height: 40px;border-radius: 50%"
+          >
+          <span>{{ row.user }}</span>
+        </el-table-column>
         <el-table-column label="操作描述" prop="operation" width="400"/>
         <el-table-column v-slot="{row}" label="操作类型" prop="operaType">
          {{ row.operaType | operaTypeFilter }}
