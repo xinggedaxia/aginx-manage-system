@@ -186,7 +186,7 @@ export const constantRoutes = [
     ]
   },
   {
-    path: 'external-link',
+    path: 'external-link-api',
     component: Layout,
     children: [
       {

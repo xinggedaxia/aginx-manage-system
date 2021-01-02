@@ -19,7 +19,7 @@ export default {
     const appMain = document.querySelector('.app-main')
     let index = 1
     setInterval(function() {
-      index = index++ % 12 + 1
+      index = index++ % 11 + 1
       appMain.style.background = `center/cover url( ${require(`../../assets/images/yd${index}.${index <= 4 ? 'jpg' : 'png'}`)}) no-repeat`
     }, 100000)
   }

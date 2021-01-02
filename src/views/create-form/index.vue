@@ -90,10 +90,10 @@
           style="height: 1px;overflow:hidden;position:absolute;top:9999px"
         />
       </el-form>
-      <h2>
-        生成代码-然后把代码手动整到previewCode-这下面会呈现效果
-      </h2>
-      <Test />
+<!--      <h2>-->
+<!--        生成代码-然后把代码手动整到previewCode-这下面会呈现效果-->
+<!--      </h2>-->
+<!--      <Test />-->
     </el-card>
   </div>
 </template>

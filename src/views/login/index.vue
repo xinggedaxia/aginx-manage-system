@@ -48,6 +48,9 @@
         </span>
       </el-form-item>
 
+      <!--拖动验证-->
+      <div id="sliderBar" :style="{display: showSlider?'block':'none' }" />
+
       <el-button
         :loading="loading"
         type="primary"
@@ -60,7 +63,19 @@
         <a
           href="http://aginx.cn/oauth/github/unifyAccountLogin.do?returnUrl=http://localhost:9528/"
         >
-          <svg class="octicon octicon-mark-github v-align-middle" height="32" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+          <svg
+            class="octicon octicon-mark-github v-align-middle"
+            height="32"
+            viewBox="0 0 16 16"
+            version="1.1"
+            width="32"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+            />
+          </svg>
         </a>
       </div>
     </el-form>
@@ -71,6 +86,7 @@
 <script>
 import jsencrypt from '@/utils/jsencrypt'
 import { validUsername } from '@/utils/validate'
+import './utlis/jigsaw.min'
 
 export default {
   name: 'Login',
@@ -90,6 +106,8 @@ export default {
       }
     }
     return {
+      showSlider: false,
+      sliderValidate: false,
       loginForm: {
         username: '',
         password: ''
@@ -111,6 +129,23 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    const _this = this
+    jigsaw.init({
+      el: document.getElementById('sliderBar'),
+      width: 450, // 可选, 默认310
+      height: 200, // 可选, 默认155
+      onSuccess: function() {
+        _this.sliderValidate = true
+      },
+      onFail: function() {
+        _this.sliderValidate = false
+      },
+      onRefresh: function() {
+        _this.sliderValidate = false
+      }
+    })
+  },
   methods: {
     showPwd() {
       if (this.passwordType === 'password') {
@@ -123,6 +158,10 @@ export default {
       })
     },
     handleLogin() {
+      this.showSlider = true
+      if (!this.sliderValidate) {
+        return
+      }
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -132,6 +171,8 @@ export default {
             this.loading = false
           }).catch((err) => {
             console.log(err)
+            this.sliderValidate = false
+            document.querySelector('.jigsaw__refreshIcon--2rYeZ').click()
             this.loading = false
           })
         } else {
@@ -147,7 +188,6 @@ export default {
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 $bg: #283443;
 $light_gray: #fff;
 $cursor: rgba(0, 0, 0, 0.65); //文字颜色
@@ -243,6 +283,10 @@ $light_gray: #fff;
     }
   }
 
+  #sliderBar {
+    margin-bottom: 22px !important;
+  }
+
   .svg-container {
     padding: 6px 5px 6px 15px;
     color: $dark_gray;
@@ -273,7 +317,8 @@ $light_gray: #fff;
     user-select: none;
   }
 }
-.third-account{
+
+.third-account {
   display: flex;
   height: 50px;
   align-items: center;

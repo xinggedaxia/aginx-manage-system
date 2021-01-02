@@ -93,14 +93,14 @@
         <el-table-column v-slot="{row}" label="操作模块" prop="type" >
           {{ row.type | typeFilter }}
         </el-table-column>
-        <el-table-column v-slot="{row}" label="操作日期" prop="createdAt">
+        <el-table-column v-slot="{row}" label="操作日期" prop="createdAt" width="180">
           {{ row.createdAt | createdAtFilter }}
         </el-table-column>
         <el-table-column v-slot="{row}" label="身份" prop="role">
           {{ row.role | roleFilter }}
         </el-table-column>
         <el-table-column label="ip" prop="ip" />
-        <el-table-column label="位置" prop="location" />
+        <el-table-column label="位置" prop="location" width="200"/>
 
       </el-table>
       <!--分页-->
