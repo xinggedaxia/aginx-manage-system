@@ -109,8 +109,8 @@ export default {
       showSlider: false,
       sliderValidate: false,
       loginForm: {
-        username: '',
-        password: ''
+        username: 'visitor',
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -167,13 +167,13 @@ export default {
           this.loading = true
           const encryptPsd = jsencrypt.encrypt(this.loginForm.password)
           this.$store.dispatch('user/login', { username: this.loginForm.username, password: encryptPsd }).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
             this.loading = false
+            this.$router.push({ path: this.redirect || '/' })
           }).catch((err) => {
             console.log(err)
             this.sliderValidate = false
-            document.querySelector('.jigsaw__refreshIcon--2rYeZ').click()
             this.loading = false
+            document.querySelector('.jigsaw__refreshIcon--2rYeZ').click()
           })
         } else {
           console.log('error submit!!')

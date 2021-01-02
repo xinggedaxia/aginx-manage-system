@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '网站监控', icon: 'dashboard' }
+      meta: { title: '网站监控', icon: 'dashboard', role: [0, 1] } // 游客无法查看
     }]
   },
   {

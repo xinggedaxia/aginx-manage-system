@@ -69,6 +69,7 @@ const actions = {
         commit('SET_QQ', qq)
         resolve(data)
       }).catch(error => {
+        console.log(error)
         reject(error)
       })
     })

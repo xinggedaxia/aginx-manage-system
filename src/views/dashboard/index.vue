@@ -1,16 +1,17 @@
 <template>
-  <div class="dashboard-editor-container">
-
+  <div v-if="$store.state.user.role === 0 " class="dashboard-editor-container">
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
     </el-row>
   </div>
+  <NoPermission v-else />
 </template>
 
 <script>
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
+import NoPermission from '@/views/401'
 
 const lineChartData = {
   userNumbers: [100, 120, 161, 184, 195, 260, 365],
@@ -21,7 +22,8 @@ export default {
   name: 'Dashboard',
   components: {
     PanelGroup,
-    LineChart
+    LineChart,
+    NoPermission
   },
   data() {
     return {
@@ -56,7 +58,7 @@ export default {
   }
 }
 
-@media (max-width:1024px) {
+@media (max-width: 1024px) {
   .chart-wrapper {
     padding: 8px;
   }
