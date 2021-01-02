@@ -143,7 +143,7 @@
           <el-button @click="dialogFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+          <el-button type="primary" :loading="buttonLoading" @click="dialogStatus==='create'?createData():updateData()">
             确认
           </el-button>
         </div>
@@ -191,6 +191,7 @@ export default {
       list: [], // 表格数据
       total: 0,
       listLoading: true, // 表格加载状态
+      buttonLoading: false, // 弹窗按钮加载状态
       listQuery: {
         pageNum: 1,
         pageSize: 10,
@@ -228,34 +229,25 @@ export default {
   },
   methods: {
     handleModifyStatus(params, type) {
+      this.listLoading = true
       let status = 1
       if (type === 'published') {
         status = 2
-      } else {
-        status = 1
       }
       updateAccount({
         adminId: params.adminId,
         status
       }).then((res) => {
-        if (res.code === 10000) {
-          this.dialogFormVisible = false
-          this.getList()
-          this.$notify({
-            title: '成功',
-            message: '用户状态更新成功',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: '失败',
-            message: res.msg,
-            type: 'error',
-            duration: 2000
-          })
-        }
+        this.listLoading = false
+        this.getList()
+        this.$notify({
+          title: '成功',
+          message: '用户状态更新成功',
+          type: 'success',
+          duration: 2000
+        })
       }).catch((e) => {
+        this.listLoading = false
         console.log(e)
       })
     },
@@ -299,12 +291,14 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.buttonLoading = true
           createApi({
             name: this.temp.adminName,
             qq: this.temp.adminQq,
             role: this.temp.role,
             status: this.temp.adminStatus
           }).then(() => {
+            this.buttonLoading = false
             this.dialogFormVisible = false
             this.getList()
             this.$notify({
@@ -314,6 +308,7 @@ export default {
               duration: 2000
             })
           }).catch((e) => {
+            this.buttonLoading = false
             console.log(e)
           })
         }
@@ -332,8 +327,8 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.buttonLoading = true
           const tempData = { ...this.temp }
-          console.log(tempData)
           const updateData = {
             adminId: tempData.adminId,
             role: tempData.role,
@@ -341,24 +336,17 @@ export default {
             qq: tempData.adminQq
           }
           updateAccount(updateData).then((res) => {
-            if (res.code === 10000) {
-              this.dialogFormVisible = false
-              this.getList()
-              this.$notify({
-                title: '成功',
-                message: '更新数据成功',
-                type: 'success',
-                duration: 2000
-              })
-            } else {
-              this.$notify({
-                title: '失败',
-                message: res.msg,
-                type: 'success',
-                duration: 2000
-              })
-            }
+            this.dialogFormVisible = false
+            this.buttonLoading = false
+            this.getList()
+            this.$notify({
+              title: '成功',
+              message: '更新数据成功',
+              type: 'success',
+              duration: 2000
+            })
           }).catch((e) => {
+            this.buttonLoading = false
             console.log(e)
           })
         }

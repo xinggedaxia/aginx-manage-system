@@ -13,21 +13,11 @@
           <span class="user-name">{{ name }}</span>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <!--          <router-link to="/">-->
-          <!--            <el-dropdown-item>-->
-          <!--              Home-->
-          <!--            </el-dropdown-item>-->
-          <!--          </router-link>-->
-          <!--          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">-->
-          <!--            <el-dropdown-item>Github</el-dropdown-item>-->
-          <!--          </a>-->
-          <!--          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">-->
-          <!--            <el-dropdown-item>Docs</el-dropdown-item>-->
-          <!--          </a>-->
-          <el-dropdown-item @click.native="$router.push({name:'PersonalInfo'})">
-            <span style="display:block;">个人资料</span>
-          </el-dropdown-item>
-
+          <router-link :to="{name:'PersonalInfo'}">
+            <el-dropdown-item>
+              <span style="display:block;">个人资料</span>
+            </el-dropdown-item>
+          </router-link>
           <el-dropdown-item @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>

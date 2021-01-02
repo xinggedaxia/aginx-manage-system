@@ -1,9 +1,8 @@
 import router from './router'
 import store from './store'
-import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken,setToken } from '@/utils/auth' // get token from cookie
+import { getToken, setToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
@@ -50,15 +49,15 @@ router.beforeEach(async(to, from, next) => {
       // in the free login whitelist, go directly
       next()
     } else {
-      let tokenArr = location.search.split('?')[1] && location.search.split('?')[1].split('=');
-      if(tokenArr && tokenArr[0]=='token'){
-        console.log(tokenArr)
-        store.commit('user/SET_TOKEN',tokenArr[1])
+      const tokenArr = location.search.split('?')[1] && location.search.split('?')[1].split('=')
+      if (tokenArr && tokenArr[0] === 'token') {
+        store.commit('user/SET_TOKEN', tokenArr[1])
         setToken(tokenArr[1])
         await store.dispatch('user/getInfo')
+        // eslint-disable-next-line require-atomic-updates
         location.search = ''
-        next();
-      }else{
+        next()
+      } else {
         // other pages that do not have permission to access are redirected to the login page.
         next(`/login?redirect=${to.path}`)
         NProgress.done()

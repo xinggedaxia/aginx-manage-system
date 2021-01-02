@@ -86,7 +86,7 @@
 <script>
 import jsencrypt from '@/utils/jsencrypt'
 import { validUsername } from '@/utils/validate'
-import './utlis/jigsaw.min'
+import '@/utils/jigsaw.min'
 
 export default {
   name: 'Login',
@@ -131,7 +131,7 @@ export default {
   },
   mounted() {
     const _this = this
-    jigsaw.init({
+    window.jigsaw.init({
       el: document.getElementById('sliderBar'),
       width: 450, // 可选, 默认310
       height: 200, // 可选, 默认155
@@ -253,8 +253,8 @@ $light_gray: #fff;
   min-height: 100%;
   width: 100%;
   //background-color: $bg;
-  //background: url("../../assets/images/loginBg.svg") no-repeat;
-  background: url("../../assets/images/yd1.jpg") no-repeat;
+  background: url("../../assets/images/loginBg.svg") no-repeat;
+  //background: url("../../assets/images/yd1.jpg") no-repeat;
   background-size: cover;
   overflow: hidden;
 

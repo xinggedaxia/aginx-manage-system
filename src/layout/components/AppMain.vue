@@ -14,14 +14,13 @@ export default {
       return this.$route.path
     }
   },
-  // fixme: 元旦彩蛋
   mounted() {
-    const appMain = document.querySelector('.app-main')
-    let index = 1
-    setInterval(function() {
-      index = index++ % 11 + 1
-      appMain.style.background = `center/cover url( ${require(`../../assets/images/yd${index}.${index <= 4 ? 'jpg' : 'png'}`)}) no-repeat`
-    }, 100000)
+    // const appMain = document.querySelector('.app-main')
+    // let index = 1
+    // setInterval(function() {
+    //   index = index++ % 11 + 1
+    //   appMain.style.background = `center/cover url( ${require(`../../assets/images/yd${index}.${index <= 4 ? 'jpg' : 'png'}`)}) no-repeat`
+    // }, 100000)
   }
 }
 </script>
@@ -34,8 +33,8 @@ export default {
   position: relative;
   overflow: hidden;
   background: #f0f2f5;
-  background: center/cover no-repeat url("../../assets/images/yd1.jpg"); /* fixme: 元旦彩蛋*/
-  transition: all 1s;
+  /*background: center/cover no-repeat url("../../assets/images/yd1.jpg"); !* fixme: 元旦彩蛋*!*/
+  /*transition: all 1s;*/
 }
 
 .fixed-header + .app-main {
