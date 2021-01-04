@@ -33,7 +33,7 @@ export default {
   position: relative;
   overflow: hidden;
   background: #f0f2f5;
-  /*background: center/cover no-repeat url("../../assets/images/yd1.jpg"); !* fixme: 元旦彩蛋*!*/
+  /*background: center/cover no-repeat url("../../assets/images/yd1.jpg"); !* *!*/
   /*transition: all 1s;*/
 }
 

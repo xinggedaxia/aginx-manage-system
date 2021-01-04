@@ -84,11 +84,12 @@
         fit
         highlight-current-row
         style="width: 100%;"
+        :row-style="{height:'53px'}"
       >
         <el-table-column v-slot="{row}" label="用户名" prop="user" width="250">
           <img
             :src="row.avatarUrl"
-            style="position:absolute;right:20px;top:6px;width: 40px;height: 40px;border-radius: 50%"
+            style="position:absolute;right:20px;top:50%;margin-top:-18px;width: 36px;height: 36px;border-radius: 50%"
           >
           <span>{{ row.user }}</span>
         </el-table-column>

@@ -49,11 +49,11 @@
 
         <!--表格列-->
         <el-table-column v-slot="{row}" label="用户名" prop="adminName" width="250">
+          <span>{{ row.adminName }}</span>
           <img
             :src="row.avatarUrl"
-            style="position:absolute;right:20px;top:6px;width: 40px;height: 40px;border-radius: 50%"
+            style="position:absolute;right:20px;top:50%;margin-top:-18px;width: 36px;height: 36px;border-radius: 50%"
           >
-          <span>{{ row.adminName }}</span>
         </el-table-column>
         <el-table-column v-slot="{row}" label="权限" prop="role">
           {{ row.role|roleFilter }}
