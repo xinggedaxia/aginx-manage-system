@@ -1,7 +1,7 @@
-// doc: https://nhnent.github.io/tui.editor/api/latest/ToastUIEditor.html#ToastUIEditor
+// doc: https://github.com/nhn/tui.editor/tree/master/apps/vue-editor
 export default {
   minHeight: '200px',
-  previewStyle: 'vertical',
+  language: 'zh-CN',
   useCommandShortcut: true,
   useDefaultHTMLSanitizer: true,
   usageStatistics: false,

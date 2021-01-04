@@ -73,6 +73,7 @@ export default function(config) {
     return {
       list: [{${variable.trim()}}], // 表格数据
       listLoading: true, // 表格加载状态
+      buttonLoading: false, // 弹窗按钮加载状态
       listQuery: {
           pageNum: 1,
           pageSize: 10,

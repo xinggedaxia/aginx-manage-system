@@ -57,7 +57,7 @@
               </el-form-item>
             </el-col>
             <el-col :lg="24">
-              <markdown-editor ref="markdown" v-model="createForm.answer" height="600px" />
+              <markdown-editor ref="markdown" :answer.sync="createForm.answer" :html.sync="createForm.html" height="600px" />
             </el-col>
           </el-row>
         </el-form>
@@ -105,14 +105,13 @@ export default {
   },
   methods: {
     handleSave() {
-      this.createForm.html = this.$refs.markdown.getHtml()
       alert(this.createForm.html)
     },
     handleQuit() {
       // this.$router.push({ name: 'QuestionsManage' })
       this.$router.go(-1)
     }
-  },
+  }
 
 }
 </script>
@@ -123,12 +122,8 @@ export default {
   margin-top: -20px;
   padding: 20px 0;
 }
-
 .md-input {
   margin-left: -75px;
 }
 
-.el-col ::v-deep.te-md-splitter {
-  width: 100%;
-}
 </style>

@@ -20,8 +20,10 @@ export default function(config) {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.buttonLoading = true
           createApi(this.createFormData).then(() => {
             this.dialogFormVisible = false
+            this.buttonLoading = false
             this.getList()
             this.$notify({
               title: '成功',
@@ -30,6 +32,7 @@ export default function(config) {
               duration: 2000
             })
           }).catch((e) => {
+          this.buttonLoading = false
             console.log(e)
           })
         }
@@ -50,9 +53,11 @@ export default function(config) {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.buttonLoading = true
           const tempData = { ...this.createFormData }
           updateApi(tempData).then(() => {
             this.dialogFormVisible = false
+            this.buttonLoading = false
             this.getList()
             this.$notify({
               title: '成功',
@@ -61,6 +66,7 @@ export default function(config) {
               duration: 2000
             })
           }).catch((e) => {
+            this.buttonLoading = false
             console.log(e)
           })
         }
@@ -69,8 +75,10 @@ export default function(config) {
   const deleteMethod = `
     // 删除数据
     handleDelete(row, index) {
+      this.listLoading = true
       deleteApi(row.id).then(() => {
           this.dialogFormVisible = false
+          this.listLoading = false
           if (this.list.length === 1 && this.listQuery.pageNumber !== 1) {
             this.listQuery.pageNumber--
           }
@@ -82,6 +90,7 @@ export default function(config) {
             duration: 2000
           })
         }).catch((e) => {
+            this.listLoading = false
             console.log(e)
           })
     },`

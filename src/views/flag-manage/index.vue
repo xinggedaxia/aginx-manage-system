@@ -10,23 +10,14 @@
             <!--基本搜索条件-->
             <el-col :md="8" :sm="24">
               <el-form-item label="标识类别:">
-                <el-input v-model="listQuery.flagType" placeholder="请输入标识类别" @keyup.enter.native="handleSearch" />
+                <el-input v-model="listQuery.type" placeholder="请输入标识类别" @keyup.enter.native="handleSearch" />
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
-              <el-form-item label="标识值:">
-                <el-input v-model.number="listQuery.value" placeholder="请输入标识值" @keyup.enter.native="handleSearch" />
+              <el-form-item label="标识字段:">
+                <el-input v-model.number="listQuery.key" placeholder="请输入字段" @keyup.enter.native="handleSearch" />
               </el-form-item>
             </el-col>
-
-            <!--高级搜索条件-->
-            <template v-if="advanced">
-              <el-col :md="8" :sm="24">
-                <el-form-item label="标识含义:">
-                  <el-input v-model="listQuery.label" placeholder="请输入标识含义" @keyup.enter.native="handleSearch" />
-                </el-form-item>
-              </el-col>
-            </template>
 
             <!--查询操作按钮-->
             <el-col :md="!advanced && 8 || 24" :sm="24">
@@ -37,10 +28,6 @@
                 <el-button size="small" @click="resetQuery">重置</el-button>
                 <el-button type="primary" size="small" @click="handleSearch">查询</el-button>
                 <el-button type="primary" size="small" @click="handleCreate">新增</el-button>
-                <el-button type="text" @click="advanced=!advanced">
-                  {{ advanced ? '收起' : '展开' }}
-                  <i :class="advanced?'el-icon-arrow-up':'el-icon-arrow-down'" />
-                </el-button>
               </div>
             </el-col>
           </el-row>
@@ -56,10 +43,10 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="标识类别" prop="flagType" />
-        <el-table-column label="标识字段" prop="flagChar" />
+        <el-table-column label="标识类别" prop="type" />
+        <el-table-column label="标识字段" prop="key" />
         <el-table-column label="标识值" prop="value" />
-        <el-table-column label="标识含义" prop="label" />
+        <el-table-column label="标识含义" prop="map" />
         <el-table-column label="备注" prop="note" />
 
         <!--表格操作列-->
@@ -102,17 +89,17 @@
           :model="createFormData"
           label-width="90px"
         >
-          <el-form-item label="标识类别:" prop="flagType">
-            <el-input v-model="createFormData.flagType" placeholder="请输入标识类别" />
+          <el-form-item label="标识类别:" prop="type">
+            <el-input v-model="createFormData.type" placeholder="请输入标识类别" />
           </el-form-item>
-          <el-form-item label="标识字段:" prop="flagChar">
-            <el-input v-model="createFormData.flagChar" placeholder="请输入标识字段" />
+          <el-form-item label="标识字段:" prop="key">
+            <el-input v-model="createFormData.key" placeholder="请输入标识字段" />
           </el-form-item>
           <el-form-item label="标识值:" prop="value">
-            <el-input v-model.number="createFormData.value" placeholder="请输入标识值" />
+            <el-input v-model="createFormData.value" placeholder="请输入标识值" />
           </el-form-item>
-          <el-form-item label="标识含义:" prop="label">
-            <el-input v-model="createFormData.label" placeholder="请输入标识含义" />
+          <el-form-item label="标识含义:" prop="map">
+            <el-input v-model="createFormData.map" placeholder="请输入标识含义" />
           </el-form-item>
           <el-form-item label="备注:" prop="note">
             <el-input v-model="createFormData.note" placeholder="请输入备注" />
@@ -123,7 +110,7 @@
           <el-button @click="dialogFormVisible = false">
             取消
           </el-button>
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+          <el-button :loading="buttonLoading" type="primary" @click="dialogStatus==='create'?createData():updateData()">
             确认
           </el-button>
         </div>
@@ -134,7 +121,7 @@
 
 <script>
 
-// import { fetchList, createAccount, updateAccount } from '@/api/flag-manage.js' fixme:替换为你的接口地址
+import { fetchList, createFlag, deleteFlag, updateFlag } from '@/api/flag-manage.js'
 import Pagination from '@/components/Pagination' // 分页
 
 export default {
@@ -143,80 +130,43 @@ export default {
   filters: {},
   data() {
     return {
-      list: [
-        {
-          flagType: '账号角色',
-          flagChar: 'role',
-          value: 0,
-          label: '超级管理员',
-          note: '系统的完全控制权'
-        },
-        {
-          flagType: '账号角色',
-          flagChar: 'role',
-          value: 1,
-          label: '管理员',
-          note: '系统的部分管理和查看权限'
-        },
-        {
-          flagType: '账号角色',
-          flagChar: 'role',
-          value: 2,
-          label: '游客',
-          note: '系统的查看权限'
-        },
-        {
-          flagType: '账号状态',
-          flagChar: 'accountStatus',
-          value: 0,
-          label: '启用',
-          note: '账号可以正常使用'
-        },
-        {
-          flagType: '账号状态',
-          flagChar: 'accountStatus',
-          value: 1,
-          label: '停用',
-          note: '账号无法登陆'
-        }
-      ], // 表格数据
+      list: [], // 表格数据
       listLoading: true, // 表格加载状态
+      buttonLoading: false, // 弹窗按钮加载状态
       listQuery: {
         pageNum: 1,
         pageSize: 10,
-        flagType: '',
-        value: '',
-        label: ''
+        type: '',
+        key: ''
       }, // 查询条件
       listQueryTemp: {
         pageNum: 1,
         pageSize: 10,
-        flagType: '',
-        value: '',
-        label: ''
+        type: '',
+        key: ''
       }, // 用于重置查询条件
       total: 0, // 总数据条数
       advanced: false, // 是否展开高级搜索条件
       optionGroup: {}, // 存放选项的数据
       createFormData: {
-        flagType: '',
-        flagChar: '',
+        type: '',
+        key: '',
         value: '',
-        label: '',
+        map: '',
         note: ''
       }, // 存储新增和编辑框的数据
       createFormDataTemp: {
-        flagType: '',
-        flagChar: '',
+        type: '',
+        key: '',
         value: '',
-        label: '',
+        map: '',
         note: ''
       }, // 用于重置新增的数据
       rules: {
-        flagType: [{ required: true, message: '请输入标识类别', trigger: 'blur' }],
-        flagChar: [{ required: true, message: '请输入标识字段', trigger: 'blur' }],
+        type: [{ required: true, message: '请输入标识类别', trigger: 'blur' }],
+        key: [{ required: true, message: '请输入标识字段', trigger: 'blur' }],
         value: [{ required: true, message: '请输入标识值', trigger: 'blur' }],
-        label: [{ required: true, message: '请输入标识含义', trigger: 'blur' }]
+        map: [{ required: true, message: '请输入标识含义', trigger: 'blur' }]
       }, // 新增和编辑框的规则
       textMap: {
         update: '编辑',
@@ -227,8 +177,7 @@ export default {
     }
   },
   created() {
-    this.listLoading = false// fixme:对好接口后移除这行代码
-    // this.getList()
+    this.getList()
   },
 
   methods: {
@@ -242,7 +191,7 @@ export default {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data
-        this.total = response.data.total
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -270,8 +219,10 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createApi(this.createFormData).then(() => {
+          this.buttonLoading = true
+          createFlag(this.createFormData).then(() => {
             this.dialogFormVisible = false
+            this.buttonLoading = false
             this.getList()
             this.$notify({
               title: '成功',
@@ -280,6 +231,7 @@ export default {
               duration: 2000
             })
           }).catch((e) => {
+            this.buttonLoading = false
             console.log(e)
           })
         }
@@ -299,9 +251,11 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.buttonLoading = true
           const tempData = { ...this.createFormData }
-          updateApi(tempData).then(() => {
+          updateFlag(tempData).then(() => {
             this.dialogFormVisible = false
+            this.buttonLoading = false
             this.getList()
             this.$notify({
               title: '成功',
@@ -310,6 +264,7 @@ export default {
               duration: 2000
             })
           }).catch((e) => {
+            this.buttonLoading = false
             console.log(e)
           })
         }
@@ -317,7 +272,9 @@ export default {
     },
     // 删除数据
     handleDelete(row, index) {
-      deleteApi(row.id).then(() => {
+      this.listLoading = true
+      deleteFlag(row.id).then(() => {
+        this.listLoading = false
         this.dialogFormVisible = false
         if (this.list.length === 1 && this.listQuery.pageNumber !== 1) {
           this.listQuery.pageNumber--
@@ -330,6 +287,7 @@ export default {
           duration: 2000
         })
       }).catch((e) => {
+        this.listLoading = false
         console.log(e)
       })
     }

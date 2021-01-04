@@ -57,7 +57,7 @@
               </el-form-item>
             </el-col>
             <el-col :lg="24">
-              <markdown-editor ref="markdown" v-model="createForm.answer" height="600px" />
+              <markdown-editor ref="markdown" :answer.sync="createForm.answer" :html.sync="createForm.html" height="600px" />
             </el-col>
           </el-row>
         </el-form>
@@ -84,7 +84,9 @@ export default {
         html: '',
         answer: '## 答案\n' +
           '在此输入答案\n' +
-          '\n' +
+          '```js ' +
+          'const a = 1' +
+          '```' +
           '## 解析\n' +
           '在此输入解析\n' +
           '\n' +
@@ -106,7 +108,6 @@ export default {
   },
   methods: {
     handleSave() {
-      this.createForm.html = this.$refs.markdown.getHtml()
       alert(this.createForm.html)
     },
     handleQuit() {
@@ -128,7 +129,4 @@ export default {
   margin-left: -75px;
 }
 
-.el-col ::v-deep.te-md-splitter {
-  width: 100%;
-}
 </style>

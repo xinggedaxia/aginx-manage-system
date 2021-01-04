@@ -92,11 +92,11 @@
           >
           <span>{{ row.user }}</span>
         </el-table-column>
-        <el-table-column label="操作描述" prop="operation" width="400"/>
+        <el-table-column label="操作描述" prop="operation" width="400" />
         <el-table-column v-slot="{row}" label="操作类型" prop="operaType">
-         {{ row.operaType | operaTypeFilter }}
+          {{ row.operaType | operaTypeFilter }}
         </el-table-column>
-        <el-table-column v-slot="{row}" label="操作模块" prop="type" >
+        <el-table-column v-slot="{row}" label="操作模块" prop="type">
           {{ row.type | typeFilter }}
         </el-table-column>
         <el-table-column v-slot="{row}" label="操作日期" prop="createdAt" width="180">
@@ -106,7 +106,7 @@
           {{ row.role | roleFilter }}
         </el-table-column>
         <el-table-column label="ip" prop="ip" />
-        <el-table-column label="位置" prop="location" width="200"/>
+        <el-table-column label="位置" prop="location" width="200" />
 
       </el-table>
       <!--分页-->
@@ -124,6 +124,7 @@
 <script>
 
 import { fetchList } from '@/api/system-log.js'
+import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // 分页
 
 export default {
@@ -158,13 +159,11 @@ export default {
       return operaTypeMap[operaType]
     },
     createdAtFilter: function(createdAt) {
-      return new Date(createdAt).toLocaleString()
+      return parseTime(new Date(createdAt))
     }
   },
   data() {
     return {
-      // id  type  user  role  ip  location operaType operation createdAt updatedAt
-
       list: [], // 表格数据
       listLoading: true, // 表格加载状态
       listQuery: {
@@ -254,13 +253,17 @@ export default {
         return [this.listQuery.startAt, this.listQuery.endAt]
       },
       set: function(newValues) {
-        this.listQuery.startAt = newValues[0]
-        this.listQuery.endAt = newValues[1]
+        if (newValues) {
+          this.listQuery.startAt = newValues[0]
+          this.listQuery.endAt = newValues[1]
+        } else {
+          this.listQuery.startAt = ''
+          this.listQuery.endAt = ''
+        }
       }
     }
   },
   created() {
-    this.listLoading = false
     this.getList()
   },
 
