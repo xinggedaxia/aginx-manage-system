@@ -8,10 +8,49 @@
     <title><%= webpackConfig.name %></title>
   </head>
   <body>
+    <style>
+      #loader-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999; }
+      #loader {
+        display: block; position: relative; left: 50%; top: 40%; z-index: 1001; width: 80px; height: 80px; margin: -45px 0 0 -45px; border-radius: 50%; border: 3px solid transparent;border-top-color: #0090ff;         
+        -webkit-animation: spin 2s linear infinite;
+        -ms-animation: spin 2s linear infinite;
+        -moz-animation: spin 2s linear infinite;
+        -o-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+      }
+      #loader:before {
+        content: ""; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border-radius: 50%; border: 3px solid transparent; border-top-color: #0090ff;
+        -webkit-animation: spin 3s linear infinite;
+        -moz-animation: spin 3s linear infinite;
+        -o-animation: spin 3s linear infinite;
+        -ms-animation: spin 3s linear infinite;
+        animation: spin 3s linear infinite;
+      }
+      #loader:after {
+        content: ""; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; border-radius: 50%; border: 3px solid transparent; border-top-color: #0090ff;
+        -moz-animation: spin 1.5s linear infinite;
+        -o-animation: spin 1.5s linear infinite;
+        -ms-animation: spin 1.5s linear infinite;
+        -webkit-animation: spin 1.5s linear infinite;
+        animation: spin 1.5s linear infinite;
+      }
+      @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); -ms-transform: rotate(0deg); transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); -ms-transform: rotate(360deg); transform: rotate(360deg); }
+      }
+      @keyframes spin {
+        0% { -webkit-transform: rotate(0deg); -ms-transform: rotate(0deg); transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); -ms-transform: rotate(360deg); transform: rotate(360deg); }
+      }
+    </style>
     <noscript>
       <strong>We're sorry but <%= webpackConfig.name %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <div id="loader-wrapper">
+        <div id="loader"></div>
+      </div>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>
