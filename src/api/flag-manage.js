@@ -31,3 +31,9 @@ export function updateFlag(data) {
     data
   })
 }
+export function getAllFlag() {
+  return request({
+    url: '/mark/getAllMarks.do',
+    method: 'get'
+  })
+}

@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { getAllFlag } from '@/api/flag-manage'
 
 const getDefaultState = () => {
   return {
@@ -52,17 +53,33 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  async getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo().then(response => {
-        const { data } = response
+      Promise.all([getInfo(), getAllFlag()]).then((res) => {
+        try {
+          // 初始化系统标识
+          const options = res[1].data
+          const newOption = {}
+          Object.keys(options).forEach((key) => {
+            const list = options[key]
+            const map = {}
+            for (const item of options[key]) {
+              map[item.value] = item.label
+            }
+            newOption[key] = { map, list }
+          })
+          sessionStorage.setItem('options', JSON.stringify(newOption))
+          console.log(newOption)
+        } catch (e) {
+          console.log(e)
+        }
 
+        // 解析用户数据
+        const { data } = res[0]
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-
         const { name, avatar, role, qq } = data
-
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_ROLE', role)

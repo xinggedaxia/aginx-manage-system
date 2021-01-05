@@ -6,7 +6,7 @@
     <div class="right-menu">
       <span
         style="line-height: 50px;color:#606266;font-size: 14px;margin-right: 20px"
-      >当前身份:{{ role === 0 ? '超级管理员' : role === 1 ? '管理员' : '游客' }}</span>
+      >当前身份:{{ role | roleFilter }}</span>
       <el-dropdown class="avatar-container" trigger="hover">
         <div class="avatar-wrapper">
           <img :src="avatar" class="user-avatar">
@@ -33,10 +33,17 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
+const options = JSON.parse(sessionStorage.getItem('options'))
+
 export default {
   components: {
     Breadcrumb,
     Hamburger
+  },
+  filters: {
+    roleFilter: function(role) {
+      return options.role.map[role]
+    }
   },
   computed: {
     ...mapGetters([

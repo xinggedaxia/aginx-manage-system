@@ -162,26 +162,20 @@
 import { fetchList, createApi, updateAccount, deleteApi } from '@/api/account'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
+const options = JSON.parse(sessionStorage.getItem('options'))
+
 export default {
   name: 'AccountManage',
   components: { Pagination },
   filters: {
     statusFilter: function(status) {
-      const statusMap = {
-        1: '启用',
-        2: '停用'
-      }
-      return statusMap[status]
+      return options.accountStatus.map[status]
     },
     roleFilter: function(role) {
-      const roleMap = {
-        0: '超级管理员',
-        1: '管理员',
-        2: '游客'
-      }
-      return roleMap[role]
+      return options.role.map[role]
     }
   },
+
   data() {
     return {
       statusList: [

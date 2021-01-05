@@ -128,36 +128,20 @@ import { fetchList } from '@/api/system-log.js'
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // 分页
 
+const options = JSON.parse(sessionStorage.getItem('options'))
+
 export default {
   name: 'SystemLog',
   components: { Pagination },
   filters: {
     typeFilter: function(role) {
-      const roleMap = {
-        1: '账号管理',
-        2: '登录登出',
-        3: '标识管理'
-      }
-      return roleMap[role]
+      return options.type.map[role]
     },
     roleFilter: function(role) {
-      const roleMap = {
-        0: '超级管理员',
-        1: '管理员',
-        2: '游客'
-      }
-      return roleMap[role]
+      return options.role.map[role]
     },
     operaTypeFilter: function(operaType) {
-      const operaTypeMap = {
-        1: '增加',
-        2: '删除',
-        3: '更新',
-        4: '账密登录',
-        5: 'github登录',
-        6: '退出登录'
-      }
-      return operaTypeMap[operaType]
+      return options.operaType.map[operaType]
     },
     createdAtFilter: function(createdAt) {
       return parseTime(new Date(createdAt))
@@ -189,35 +173,8 @@ export default {
       total: 0, // 总数据条数
       advanced: false, // 是否展开高级搜索条件
       optionGroup: {
-        roleList: [
-          {
-            label: '超级管理员',
-            value: '0'
-          },
-          {
-            label: '管理员',
-            value: '1'
-          },
-          {
-            label: '游客',
-            value: '2'
-          }
-        ],
-        operaTypeList: [
-          {
-            label: '账号管理',
-            value: '1'
-          },
-          {
-            label: '登录登出',
-            value: '2'
-          },
-          {
-            label: '标识管理',
-            value: '3'
-          }
-        ]
-
+        operaTypeList: options.type.list,
+        roleList: options.role.list
       }, // 存放选项的数据,
       pickerOptions: {
         shortcuts: [{

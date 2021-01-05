@@ -10,12 +10,12 @@
             <!--基本搜索条件-->
             <el-col :md="8" :sm="24">
               <el-form-item label="标识类别:">
-                <el-input v-model="listQuery.type" placeholder="请输入标识类别" @keyup.enter.native="handleSearch" />
+                <el-input v-model="listQuery.type" placeholder="请输入标识类别" @keyup.enter.native="handleSearch"/>
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
               <el-form-item label="标识字段:">
-                <el-input v-model.number="listQuery.key" placeholder="请输入字段" @keyup.enter.native="handleSearch" />
+                <el-input v-model.number="listQuery.key" placeholder="请输入字段" @keyup.enter.native="handleSearch"/>
               </el-form-item>
             </el-col>
 
@@ -43,27 +43,21 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="标识类别" prop="type" />
-        <el-table-column label="标识字段" prop="key" />
-        <el-table-column label="标识值" prop="value" />
-        <el-table-column label="标识含义" prop="map" />
-        <el-table-column label="备注" prop="note" />
+        <el-table-column label="标识类别" prop="type"/>
+        <el-table-column label="标识字段" prop="key"/>
+        <el-table-column label="标识值" prop="value"/>
+        <el-table-column label="标识含义" prop="map"/>
+        <el-table-column label="备注" prop="note"/>
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
-          <template v-slot="{row,$index}">
+          <template v-slot="{row}">
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <el-popconfirm
-              title="确认删除吗？"
-              style="margin-left:10px;"
-              @confirm="handleDelete(row,$index)"
-            >
-              <el-button slot="reference" size="mini" type="danger">
-                删除
-              </el-button>
-            </el-popconfirm>
+            <el-button slot="reference" size="mini" type="danger" @click="handleDeleteConfirm(row.id)">
+              删除
+            </el-button>
           </template>
         </el-table-column>
 
@@ -90,19 +84,19 @@
           label-width="90px"
         >
           <el-form-item label="标识类别:" prop="type">
-            <el-input v-model="createFormData.type" placeholder="请输入标识类别" />
+            <el-input v-model="createFormData.type" placeholder="请输入标识类别"/>
           </el-form-item>
           <el-form-item label="标识字段:" prop="key">
-            <el-input v-model="createFormData.key" placeholder="请输入标识字段" />
+            <el-input v-model="createFormData.key" placeholder="请输入标识字段"/>
           </el-form-item>
           <el-form-item label="标识值:" prop="value">
-            <el-input v-model="createFormData.value" placeholder="请输入标识值" />
+            <el-input v-model="createFormData.value" placeholder="请输入标识值"/>
           </el-form-item>
           <el-form-item label="标识含义:" prop="map">
-            <el-input v-model="createFormData.map" placeholder="请输入标识含义" />
+            <el-input v-model="createFormData.map" placeholder="请输入标识含义"/>
           </el-form-item>
           <el-form-item label="备注:" prop="note">
-            <el-input v-model="createFormData.note" placeholder="请输入备注" />
+            <el-input v-model="createFormData.note" placeholder="请输入备注"/>
           </el-form-item>
 
         </el-form>
@@ -181,6 +175,18 @@ export default {
   },
 
   methods: {
+    handleDeleteConfirm(id) {
+      this.$confirm('删除标识可能导致系统运行异常,确认删除?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleDelete(id)
+      }).catch(() => {
+
+      })
+    },
+
     // 点击搜索
     handleSearch() {
       this.listQuery.pageNum = 1 // 重置pageNum
@@ -213,7 +219,12 @@ export default {
     },
     // 重置新增表单数据
     resetCreateFormData() {
-      this.createFormData = { ...this.createFormDataTemp }
+      this.createFormData = {
+        ...this.createFormData,
+        value: '',
+        map: '',
+        note: ''
+      }
     },
     // 新增数据
     createData() {
@@ -221,7 +232,7 @@ export default {
         if (valid) {
           this.buttonLoading = true
           createFlag(this.createFormData).then(() => {
-            this.dialogFormVisible = false
+            // this.dialogFormVisible = false
             this.buttonLoading = false
             this.getList()
             this.$notify({
@@ -271,9 +282,9 @@ export default {
       })
     },
     // 删除数据
-    handleDelete(row, index) {
+    handleDelete(id) {
       this.listLoading = true
-      deleteFlag(row.id).then(() => {
+      deleteFlag(id).then(() => {
         this.listLoading = false
         this.dialogFormVisible = false
         if (this.list.length === 1 && this.listQuery.pageNumber !== 1) {
