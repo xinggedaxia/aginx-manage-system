@@ -32,9 +32,6 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
-const options = JSON.parse(sessionStorage.getItem('options'))
-
 export default {
   components: {
     Breadcrumb,
@@ -42,7 +39,7 @@ export default {
   },
   filters: {
     roleFilter: function(role) {
-      return options.role.map[role]
+      return JSON.parse(sessionStorage.getItem('options')).role.map[role]
     }
   },
   computed: {
