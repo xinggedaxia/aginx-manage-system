@@ -19,7 +19,7 @@
         </div>
         <div class="info-item">
           <label>用户身份</label>
-          <p>{{ role === 0 ? '超级管理员' : role === 1 ? '管理员' : '游客' }}</p>
+          <p>{{ role|roleFilter }}</p>
         </div>
         <div class="info-item">
           <label>QQ</label>
@@ -29,7 +29,7 @@
           </div>
           <el-form v-if="showEditQq" ref="form" :inline="true" label-width="80px" size="small" style="height: 35px">
             <el-form-item>
-              <el-input v-model="newQq" placeholder="请输入新的qq"/>
+              <el-input v-model="newQq" placeholder="请输入新的qq" />
             </el-form-item>
             <el-form-item>
               <el-button @click="showEditQq=false">取消</el-button>
@@ -67,7 +67,7 @@
           />
         </el-form-item>
         <el-form-item label="新密码:" prop="newPassword">
-          <el-input v-model="createFormData.newPassword" type="password" placeholder="请输入新密码" autocomplete="off"/>
+          <el-input v-model="createFormData.newPassword" type="password" placeholder="请输入新密码" autocomplete="off" />
         </el-form-item>
         <el-form-item label="确认密码:" prop="newPasswordConfirm">
           <el-input
@@ -93,10 +93,17 @@
 </template>
 
 <script>
+const options = JSON.parse(sessionStorage.getItem('options'))
+
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'PersonalInfo',
+  filters: {
+    roleFilter: function(role) {
+      return options.role.map[role]
+    }
+  },
   data() {
     const validatePass = (rule, value, callback) => {
       if (value === '') {

@@ -131,7 +131,7 @@
           <el-form-item label="状态:" prop="adminStatus">
             <el-select v-model="temp.adminStatus" placeholder="placeholder" :disabled="dialogStatus==='update'">
               <el-option
-                v-for="item in [{label:'启用',value:1},{label:'停用',value:2}]"
+                v-for="item in statusList"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -178,16 +178,7 @@ export default {
 
   data() {
     return {
-      statusList: [
-        {
-          label: '启用',
-          value: '1'
-        },
-        {
-          label: '停用',
-          value: '2'
-        }
-      ],
+      statusList: options.accountStatus.list,
       list: [], // 表格数据
       total: 0,
       listLoading: true, // 表格加载状态
