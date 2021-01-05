@@ -10,12 +10,12 @@
             <!--基本搜索条件-->
             <el-col :md="8" :sm="24">
               <el-form-item label="标识类别:">
-                <el-input v-model="listQuery.type" placeholder="请输入标识类别" @keyup.enter.native="handleSearch"/>
+                <el-input v-model="listQuery.type" placeholder="请输入标识类别" @keyup.enter.native="handleSearch" />
               </el-form-item>
             </el-col>
             <el-col :md="8" :sm="24">
               <el-form-item label="标识字段:">
-                <el-input v-model.number="listQuery.key" placeholder="请输入字段" @keyup.enter.native="handleSearch"/>
+                <el-input v-model.number="listQuery.key" placeholder="请输入字段" @keyup.enter.native="handleSearch" />
               </el-form-item>
             </el-col>
 
@@ -43,11 +43,11 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="标识类别" prop="type"/>
-        <el-table-column label="标识字段" prop="key"/>
-        <el-table-column label="标识值" prop="value"/>
-        <el-table-column label="标识含义" prop="map"/>
-        <el-table-column label="备注" prop="note"/>
+        <el-table-column label="标识类别" prop="type" />
+        <el-table-column label="标识字段" prop="key" />
+        <el-table-column label="标识值" prop="value" />
+        <el-table-column label="标识含义" prop="map" />
+        <el-table-column label="备注" prop="note" />
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
@@ -84,19 +84,19 @@
           label-width="90px"
         >
           <el-form-item label="标识类别:" prop="type">
-            <el-input v-model="createFormData.type" placeholder="请输入标识类别"/>
+            <el-input v-model="createFormData.type" placeholder="请输入标识类别" />
           </el-form-item>
           <el-form-item label="标识字段:" prop="key">
-            <el-input v-model="createFormData.key" placeholder="请输入标识字段"/>
+            <el-input v-model="createFormData.key" placeholder="请输入标识字段" />
           </el-form-item>
           <el-form-item label="标识值:" prop="value">
-            <el-input v-model="createFormData.value" placeholder="请输入标识值"/>
+            <el-input v-model="createFormData.value" placeholder="请输入标识值" />
           </el-form-item>
           <el-form-item label="标识含义:" prop="map">
-            <el-input v-model="createFormData.map" placeholder="请输入标识含义"/>
+            <el-input v-model="createFormData.map" placeholder="请输入标识含义" />
           </el-form-item>
           <el-form-item label="备注:" prop="note">
-            <el-input v-model="createFormData.note" placeholder="请输入备注"/>
+            <el-input v-model="createFormData.note" placeholder="请输入备注" />
           </el-form-item>
 
         </el-form>
@@ -175,6 +175,11 @@ export default {
   },
 
   methods: {
+    refresh() {
+      setTimeout((item, index) => {
+        window.location.reload()
+      }, 500)
+    },
     handleDeleteConfirm(id) {
       this.$confirm('删除标识可能导致系统运行异常,确认删除?', '警告', {
         confirmButtonText: '确定',
@@ -274,6 +279,7 @@ export default {
               type: 'success',
               duration: 2000
             })
+            this.refresh()
           }).catch((e) => {
             this.buttonLoading = false
             console.log(e)

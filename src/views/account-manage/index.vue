@@ -121,7 +121,7 @@
           <el-form-item label="权限:" prop="role">
             <el-select v-model="temp.role" placeholder="placeholder">
               <el-option
-                v-for="item in [{label:'超级管理员',value:0},{label:'管理员',value:1},{label:'游客',value:2}]"
+                v-for="item in roleList"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -179,6 +179,7 @@ export default {
   data() {
     return {
       statusList: options.accountStatus.list,
+      roleList: options.role.list,
       list: [], // 表格数据
       total: 0,
       listLoading: true, // 表格加载状态
@@ -201,8 +202,8 @@ export default {
         'adminId': '',
         'adminName': '',
         'adminQq': '',
-        'role': 2,
-        'adminStatus': 1
+        'role': '2',
+        'adminStatus': '1'
       }, // 存储新增和编辑框的数据
       textMap: {
         update: '编辑',
@@ -260,8 +261,8 @@ export default {
       this.temp = {
         'adminName': '',
         'adminQq': '',
-        'role': 2,
-        'adminStatus': 1
+        'role': '2',
+        'adminStatus': '1'
       }
     },
     // 重置查询
