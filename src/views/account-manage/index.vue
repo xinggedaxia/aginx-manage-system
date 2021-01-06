@@ -173,6 +173,9 @@ export default {
     },
     roleFilter: function(role) {
       return options.role.map[role]
+    },
+    toStringFilter(val) {
+      return val.toString()
     }
   },
 
@@ -202,8 +205,8 @@ export default {
         'adminId': '',
         'adminName': '',
         'adminQq': '',
-        'role': '2',
-        'adminStatus': '1'
+        'role': 2,
+        'adminStatus': 1
       }, // 存储新增和编辑框的数据
       textMap: {
         update: '编辑',
@@ -261,8 +264,8 @@ export default {
       this.temp = {
         'adminName': '',
         'adminQq': '',
-        'role': '2',
-        'adminStatus': '1'
+        'role': 2,
+        'adminStatus': 1
       }
     },
     // 重置查询

@@ -61,8 +61,19 @@ const actions = {
           const options = res[1].data
           const newOption = {}
           Object.keys(options).forEach((key) => {
-            const list = options[key]
+            let list = ''
             const map = {}
+            // role和accountStatus 标识管理中存的字符串，后端实际存的数字
+            if (key === 'role' || key === 'accountStatus') {
+              list = options[key].map(({ label, value }) => {
+                return {
+                  label,
+                  value: parseInt(value)
+                }
+              })
+            } else {
+              list = { ...options[key] }
+            }
             for (const item of options[key]) {
               map[item.value] = item.label
             }
