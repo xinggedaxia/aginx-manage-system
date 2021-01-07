@@ -1,4 +1,4 @@
-# AginxManageSystem
+# aginx-manage-system
 
 > aginx后台管理系统
 
