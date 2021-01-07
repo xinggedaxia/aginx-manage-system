@@ -5,13 +5,15 @@
       <div class="info-list">
         <el-upload
           class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="http://localhost/manageSystem/api/user/uploadAvatar.do"
+          name="upload_file"
+          :headers="uploadHeaders()"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :on-error="handleAvatarError"
           :before-upload="beforeAvatarUpload"
         >
-          <img :src="avatar" class="avatar">
+          <img :src="imageUrl" class="avatar">
         </el-upload>
         <div class="info-item">
           <label>用户名</label>
@@ -96,6 +98,7 @@
 const options = JSON.parse(sessionStorage.getItem('options'))
 
 import { mapGetters } from 'vuex'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'PersonalInfo',
@@ -163,7 +166,15 @@ export default {
       'qq'
     ])
   },
+  created() {
+    this.imageUrl = this.avatar
+  },
   methods: {
+    uploadHeaders() {
+      return {
+        'X-Access-Token': getToken()
+      }
+    },
     updateQq() {
 
     },
@@ -187,7 +198,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrl = res
     },
     handleAvatarError(error) {
       console.log(error)
