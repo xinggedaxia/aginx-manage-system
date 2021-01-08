@@ -5,7 +5,7 @@
       <div class="info-list">
         <el-upload
           class="avatar-uploader"
-          action="http://localhost/manageSystem/api/user/uploadAvatar.do"
+          :action="imageUrl"
           name="upload_file"
           :headers="uploadHeaders()"
           :show-file-list="false"
@@ -13,7 +13,7 @@
           :on-error="handleAvatarError"
           :before-upload="beforeAvatarUpload"
         >
-          <img :src="imageUrl" class="avatar">
+          <img :src="avatar" class="avatar">
         </el-upload>
         <div class="info-item">
           <label>用户名</label>
@@ -137,7 +137,7 @@ export default {
     }
 
     return {
-      imageUrl: '',
+      imageUrl: 'http://aginx.cn/manageSystem/api/user/uploadAvatar.do',
       showEditQq: false,
       newQq: '',
       showModal: false,
@@ -165,9 +165,6 @@ export default {
       'role',
       'qq'
     ])
-  },
-  created() {
-    this.imageUrl = this.avatar
   },
   methods: {
     uploadHeaders() {
@@ -198,7 +195,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = res
+      this.$store.commit('user/SET_AVATAR',res.data.url)
     },
     handleAvatarError(error) {
       console.log(error)
