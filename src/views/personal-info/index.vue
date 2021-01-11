@@ -99,6 +99,7 @@ const options = JSON.parse(sessionStorage.getItem('options'))
 
 import { mapGetters } from 'vuex'
 import { getToken } from '@/utils/auth'
+import { updatePasswordApi, updateInfoSelfApi } from '@/api/account'
 
 export default {
   name: 'PersonalInfo',
@@ -173,7 +174,17 @@ export default {
       }
     },
     updateQq() {
-
+      const tempData = {
+        qq: this.newQq
+      }
+      updateInfoSelfApi(tempData).then(() => {
+        this.showEditQq = false
+        this.$store.commit('user/SET_QQ', this.newQq)
+        this.$message.success('修改成功')
+      }).catch((e) => {
+        console.log(e)
+      })
+      console.log(this.newQq)
     },
     handleEdit() {
       this.showModal = true
@@ -188,6 +199,7 @@ export default {
           updatePasswordApi(tempData).then(() => {
             this.dialogFormVisible = false
             this.$message.success('密码修改成功')
+            this.showModal = false
           }).catch((e) => {
             console.log(e)
           })
@@ -195,7 +207,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      this.$store.commit('user/SET_AVATAR',res.data.url)
+      this.$store.commit('user/SET_AVATAR', res.data.url)
     },
     handleAvatarError(error) {
       console.log(error)
