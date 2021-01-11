@@ -5,7 +5,9 @@
       <div class="info-list">
         <el-upload
           class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
+          :action="imageUrl"
+          name="upload_file"
+          :headers="uploadHeaders()"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :on-error="handleAvatarError"
@@ -96,6 +98,8 @@
 const options = JSON.parse(sessionStorage.getItem('options'))
 
 import { mapGetters } from 'vuex'
+import { getToken } from '@/utils/auth'
+import { updatePasswordApi, updateInfoSelfApi } from '@/api/account'
 
 export default {
   name: 'PersonalInfo',
@@ -134,7 +138,7 @@ export default {
     }
 
     return {
-      imageUrl: '',
+      imageUrl: 'http://aginx.cn/manageSystem/api/user/uploadAvatar.do',
       showEditQq: false,
       newQq: '',
       showModal: false,
@@ -164,8 +168,23 @@ export default {
     ])
   },
   methods: {
+    uploadHeaders() {
+      return {
+        'X-Access-Token': getToken()
+      }
+    },
     updateQq() {
-
+      const tempData = {
+        qq: this.newQq
+      }
+      updateInfoSelfApi(tempData).then(() => {
+        this.showEditQq = false
+        this.$store.commit('user/SET_QQ', this.newQq)
+        this.$message.success('修改成功')
+      }).catch((e) => {
+        console.log(e)
+      })
+      console.log(this.newQq)
     },
     handleEdit() {
       this.showModal = true
@@ -180,6 +199,7 @@ export default {
           updatePasswordApi(tempData).then(() => {
             this.dialogFormVisible = false
             this.$message.success('密码修改成功')
+            this.showModal = false
           }).catch((e) => {
             console.log(e)
           })
@@ -187,7 +207,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.$store.commit('user/SET_AVATAR', res.data.url)
     },
     handleAvatarError(error) {
       console.log(error)
