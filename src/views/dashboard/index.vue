@@ -4,15 +4,16 @@
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
     </el-row>-->
-    <iframe v-if="url" :src="url" frameborder="0" style="width: 100%;height: 800px" />
+    <iframe v-if="url" :src="url" frameborder="0" style="width: 100%;height: 800px"/>
   </div>
-  <NoPermission v-else />
+  <NoPermission v-else/>
 </template>
 
 <script>
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
 import NoPermission from '@/views/401'
+
 const options = JSON.parse(sessionStorage.getItem('options'))
 const lineChartData = {
   userNumbers: [100, 120, 161, 184, 195, 260, 365],
@@ -29,7 +30,20 @@ export default {
   data() {
     return {
       lineChartData: lineChartData,
-      url: options.homeUrl.list[0].value
+      url: ''
+    }
+  },
+  mounted() {
+    if (this.$store.state.user.role === 0) {
+      this.$confirm('Don`t open this page when you are in your company or you might be fired !', 'FBI Warning ! ', {
+        confirmButtonText: 'i know',
+        cancelButtonText: 'leave now',
+        type: 'warning'
+      }).then(() => {
+        this.url = options.homeUrl.list[0].value
+      }).catch((e) => {
+        this.$router.push({ name: 'SystemLog' })
+      })
     }
   },
   methods: {
