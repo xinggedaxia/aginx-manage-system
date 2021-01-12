@@ -62,6 +62,7 @@
         <span style="margin-right: 10px">第三方登录</span>
         <a
           href="http://aginx.cn/oauth/github/unifyAccountLogin.do?returnUrl=http://localhost:9528/"
+          style="margin-right: 5px"
         >
           <svg
             class="octicon octicon-mark-github v-align-middle"
@@ -255,9 +256,8 @@ $light_gray: #fff;
   align-items: center;
   min-height: 100%;
   width: 100%;
-  //background: url("../../assets/images/loginBg.svg") no-repeat;
-  background: url("https://picsum.photos/1920/1080") no-repeat;
-  //background: url("../../assets/images/yd1.jpg") no-repeat;
+  background: url("../../assets/images/loginBg.svg") no-repeat;
+  //background: url("https://picsum.photos/1920/1080") no-repeat;
   background-size: cover;
   overflow: hidden;
 
