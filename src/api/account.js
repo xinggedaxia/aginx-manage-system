@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import jsencrypt from '@/utils/jsencrypt'
 
 export function fetchList(data) {
   return request({
@@ -28,5 +29,26 @@ export function updateAccount(data) {
     url: '/user/updateUserInfo.do',
     method: 'post',
     data
+  })
+}
+
+export function updatePasswordApi(data) {
+  const pwdOld = jsencrypt.encrypt(data.password)
+  const pwdNew = jsencrypt.encrypt(data.newPassword)
+  return request({
+    url: '/user/updatePwd.do',
+    method: 'post',
+    data: {
+      pwdOld,
+      pwdNew
+    }
+  })
+}
+
+export function updateInfoSelfApi(data) {
+  return request({
+    url: '/user/updateInfoSelf.do',
+    method: 'post',
+    data: data
   })
 }
