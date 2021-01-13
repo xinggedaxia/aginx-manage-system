@@ -50,8 +50,8 @@
                   v-model="createForm.level"
                   :max="5"
                   :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
-                  :low-threshold="2"
-                  :high-threshold="4"
+                  :low-threshold="1"
+                  :high-threshold="2"
                   style="display:inline-block"
                 />
               </el-form-item>

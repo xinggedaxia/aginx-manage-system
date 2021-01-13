@@ -48,10 +48,10 @@
               <el-form-item label="题目难度:" class="postInfo-container-item">
                 <el-rate
                   v-model="createForm.level"
-                  :max="5"
+                  :max="3"
                   :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
-                  :low-threshold="2"
-                  :high-threshold="4"
+                  :low-threshold="1"
+                  :high-threshold="2"
                   style="display:inline-block"
                 />
               </el-form-item>
@@ -84,15 +84,11 @@ export default {
         html: '',
         answer: '## 答案\n' +
           '在此输入答案\n' +
-          '```js ' +
-          'const a = 1' +
-          '```' +
+          '```javascript \n' +
+          'const a = 1;\nlet b = 1 + 1;\n' +
+          '```\n' +
           '## 解析\n' +
-          '在此输入解析\n' +
-          '\n' +
-          '## 参考资料\n' +
-          '在此声明参考资料，避免侵权\n' +
-          '[基于webpack打包多页应用,对前端工程化的思考](https://juejin.cn/post/6907040632045305863)'
+          '在此输入解析\n'
       },
       questionTypeList: [
         {
