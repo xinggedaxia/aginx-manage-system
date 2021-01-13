@@ -9,8 +9,8 @@
         <image-cropper
           v-show="imagecropperShow"
           :key="imagecropperKey"
-          :width="300"
-          :height="300"
+          :width="100"
+          :height="100"
           field="upload_file"
           :url="imageUrl"
           lang-type="zh"
@@ -221,25 +221,6 @@ export default {
     },
     handleAvatarSuccess(res) {
       this.$store.commit('user/SET_AVATAR', res.data.url)
-    },
-    handleAvatarError(error) {
-      console.log(error)
-      this.$message({
-        type: 'error',
-        message: '头像修改失败'
-      })
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('图片格式不正确!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
     }
   }
 }
