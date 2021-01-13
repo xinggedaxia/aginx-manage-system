@@ -3,18 +3,21 @@
     <el-card class="box-card">
       <h2 class="title">个人资料</h2>
       <div class="info-list">
-        <el-upload
-          class="avatar-uploader"
-          :action="imageUrl"
-          name="upload_file"
+        <el-avatar :size="100" :src="avatar" @click.native="imagecropperShow=true" style="cursor: pointer">
+          <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
+        </el-avatar>
+        <image-cropper
+          v-show="imagecropperShow"
+          :key="imagecropperKey"
+          :width="300"
+          :height="300"
+          field="upload_file"
+          :url="imageUrl"
+          lang-type="zh"
           :headers="uploadHeaders()"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :on-error="handleAvatarError"
-          :before-upload="beforeAvatarUpload"
-        >
-          <img :src="avatar" class="avatar">
-        </el-upload>
+          @close="close"
+          @crop-upload-success="handleAvatarSuccess"
+        />
         <div class="info-item">
           <label>用户名</label>
           <p>{{ name }}</p>
@@ -59,7 +62,6 @@
         label-width="90px"
         autocomplete="new-password"
       >
-        <!--fixme:无法解决谷歌浏览器密码自动填充问题-->
         <el-form-item label="原始密码:" prop="password">
           <el-input
             v-model="createFormData.password"
@@ -100,9 +102,11 @@ const options = JSON.parse(sessionStorage.getItem('options'))
 import { mapGetters } from 'vuex'
 import { getToken } from '@/utils/auth'
 import { updatePasswordApi, updateInfoSelfApi } from '@/api/account'
+import ImageCropper from '@/components/ImageCropper'
 
 export default {
   name: 'PersonalInfo',
+  components: { ImageCropper },
   filters: {
     roleFilter: function(role) {
       return options.role.map[role]
@@ -140,6 +144,8 @@ export default {
     return {
       imageUrl: 'http://aginx.cn/manageSystem/api/user/uploadAvatar.do',
       showEditQq: false,
+      imagecropperShow: false,
+      imagecropperKey: 0,
       newQq: '',
       showModal: false,
       createFormData: {
@@ -168,6 +174,14 @@ export default {
     ])
   },
   methods: {
+    cropSuccess(resData) {
+      this.imagecropperShow = false
+      this.imagecropperKey = this.imagecropperKey + 1
+      this.image = resData.files.avatar
+    },
+    close() {
+      this.imagecropperShow = false
+    },
     uploadHeaders() {
       return {
         'X-Access-Token': getToken()
@@ -184,7 +198,6 @@ export default {
       }).catch((e) => {
         console.log(e)
       })
-      console.log(this.newQq)
     },
     handleEdit() {
       this.showModal = true
@@ -206,7 +219,7 @@ export default {
         }
       })
     },
-    handleAvatarSuccess(res, file) {
+    handleAvatarSuccess(res) {
       this.$store.commit('user/SET_AVATAR', res.data.url)
     },
     handleAvatarError(error) {
@@ -221,7 +234,7 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$message.error('图片格式不正确!')
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
@@ -287,12 +300,6 @@ export default {
     border-radius: 50%;
     margin: 0 0 15px 20px;
     overflow: hidden;
-
-    img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-    }
   }
 
   .avatar-uploader .el-upload {

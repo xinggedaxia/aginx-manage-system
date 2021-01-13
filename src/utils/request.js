@@ -92,6 +92,9 @@ service.interceptors.response.use(
       if (error.message.includes('Network Error')) {
         message = '网络请求错误'
       }
+      if (error.message.includes('500')) {
+        message = '服务器内部错误'
+      }
 
       Message({
         message,
