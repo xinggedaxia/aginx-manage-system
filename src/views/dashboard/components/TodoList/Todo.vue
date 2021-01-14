@@ -64,7 +64,6 @@ export default {
       const value = e.target.value.trim()
       const { todo } = this
 
-      console.log(this.editing, todo)
       if (!value) {
         this.deleteTodo({
           todo

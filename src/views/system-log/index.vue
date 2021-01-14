@@ -260,4 +260,9 @@ export default {
     padding: 30px 40px;
   }
 }
+.el-table{
+  ::v-deep.cell{
+    white-space: nowrap;
+  }
+}
 </style>

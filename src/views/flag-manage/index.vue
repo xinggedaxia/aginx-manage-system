@@ -279,7 +279,7 @@ export default {
               type: 'success',
               duration: 2000
             })
-            this.refresh()
+            // this.refresh()
           }).catch((e) => {
             this.buttonLoading = false
             console.log(e)
@@ -319,6 +319,11 @@ export default {
 
   .el-dialog__body {
     padding: 30px 40px;
+  }
+}
+.el-table{
+  ::v-deep.cell{
+    white-space: nowrap;
   }
 }
 </style>
