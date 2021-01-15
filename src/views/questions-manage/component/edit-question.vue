@@ -48,7 +48,7 @@
               <el-form-item label="题目难度:" class="postInfo-container-item">
                 <el-rate
                   v-model="createForm.level"
-                  :max="5"
+                  :max="3"
                   :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
                   :low-threshold="1"
                   :high-threshold="2"
@@ -79,14 +79,9 @@ export default {
     return {
       createForm: {
         title: '',
-        type: 'html',
+        type: '',
         level: 1,
-        html: '',
-        answer: '# 欢迎使用 Markdown在线编辑器 MdEditor\n' +
-          '\n' +
-          '**Markdown是一种轻量级的「标记语言」**\n' +
-          '\n' +
-          '![markdown](https://images.goodsmile.info/cgm/images/product/20190426/8307/60135/large/77deb943a7f8036245ea80d4d074e2f5.jpg)'
+        answer: ''
       },
       questionTypeList: [
         {
@@ -101,11 +96,11 @@ export default {
     }
   },
   created() {
-    this.createForm = this.$route.params.createFormData
+    this.createForm = JSON.parse(this.$route.params.createFormData) || {}
   },
   methods: {
     handleSave() {
-      alert(this.createForm.html)
+      alert(this.createForm.answer)
     },
     handleQuit() {
       // this.$router.push({ name: 'QuestionsManage' })

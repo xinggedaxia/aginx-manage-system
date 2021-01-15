@@ -84,17 +84,19 @@
         <el-table-column v-slot="{row}" label="难度" prop="level">
           {{ row.level | levelFilter }}
         </el-table-column>
-        <!--        <el-table-column label="答案" prop="answer"/>-->
         <el-table-column label="创建人" prop="createBy" />
         <el-table-column label="创建日期" prop="createTime" />
         <el-table-column label="更新人" prop="updateBy" />
         <el-table-column label="更新日期" prop="updateTime" />
 
         <!--表格操作列-->
-        <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
           <template v-slot="{row,$index}">
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               编辑
+            </el-button>
+            <el-button type="primary" size="mini" @click="handlePreview(row)">
+              预览
             </el-button>
             <el-popconfirm
               title="确认删除吗？"
@@ -118,74 +120,19 @@
         @pagination="getList"
       />
 
-      <!--编辑新增共用弹窗-->
+      <!--预览弹窗-->
       <el-dialog
         :title="textMap[dialogStatus]"
         :visible.sync="dialogFormVisible"
         custom-class="base-dialog question-manage-dialog"
       >
-        <el-form
-          ref="dataForm"
-          :rules="rules"
-          :model="createFormData"
-          label-width="90px"
-        >
-          <el-row :gutter="25">
-            <el-col :span="12">
-              <el-form-item label="标题:" prop="title">
-                <el-input v-model="createFormData.title" placeholder="请输入标题" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="类型:" prop="type">
-                <el-select v-model="createFormData.type" placeholder="请选择类型">
-                  <el-option v-for="{label,value} in optionGroup.typeList" :key="value" :label="label" :value="value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="难度:" prop="level">
-                <el-select v-model="createFormData.level" placeholder="请选择难度">
-                  <el-option v-for="{label,value} in optionGroup.levelList" :key="value" :label="label" :value="value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="答案:" prop="answer">
-                <el-input v-model="createFormData.answer" placeholder="请输入答案" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="创建人:" prop="createBy">
-                <el-input v-model="createFormData.createBy" placeholder="请输入创建人" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="创建日期:" prop="createTime">
-                <el-input v-model="createFormData.createTime" placeholder="请输入创建日期" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="更新人:" prop="updateBy">
-                <el-input v-model="createFormData.updateBy" placeholder="请输入更新人" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="更新日期:" prop="updateTime">
-                <el-input v-model="createFormData.updateTime" placeholder="请输入更新日期" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-        </el-form>
+        <h2 class="title">{{ title }}</h2>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">
-            取消
-          </el-button>
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-            确认
+          <el-button type="primary" size="small" @click="dialogFormVisible = false">
+            关闭
           </el-button>
         </div>
+        <markdown-editor view-modal :answer="answer" height="600px" />
       </el-dialog>
     </el-card>
   </div>
@@ -195,23 +142,25 @@
 
 // import { fetchList, createAccount, updateAccount } from '@/api/question-manage.js' fixme:替换为你的接口地址
 import Pagination from '@/components/Pagination' // 分页
+import MarkdownEditor from '@/components/MarkdownEditor'
+
+const options = JSON.parse(sessionStorage.getItem('options'))
 
 export default {
   name: 'QuestionManage',
-  components: { Pagination },
+  components: { Pagination, MarkdownEditor },
   filters: {
     typeFilter: function(type) {
       return type
     },
     levelFilter: function(level) {
-      const levelMap = {
-        0: '简单'
-      }
-      return levelMap[level]
+      return options.questionLevel.map[level]
     }
   },
   data() {
     return {
+      title: '', // 弹窗标题
+      answer: '', // 弹窗显示内容
       list: [{
         title: '什么是html?',
         type: 'html',
@@ -242,7 +191,13 @@ export default {
         title: '什么是js?',
         type: 'js',
         level: 2,
-        answer: '',
+        answer: '## 答案\n' +
+          '在此输入答案\n' +
+          '```javascript \n' +
+          'const a = 1;\nlet b = 1 + 1;\n' +
+          '```\n' +
+          '## 解析\n' +
+          '在此输入解析\n',
         createBy: 'xingge',
         createTime: '2020-12-31',
         updateBy: '-',
@@ -331,6 +286,12 @@ export default {
   },
 
   methods: {
+    // 题目预览
+    handlePreview(row) {
+      this.dialogFormVisible = true
+      this.title = row.title
+      this.answer = row.answer
+    },
     // 点击搜索
     handleSearch() {
       this.listQuery.pageNum = 1 // 重置pageNum
@@ -393,7 +354,9 @@ export default {
       const createFormData = { ...row }
       this.$router.push({
         name: 'EditQuestion',
-        params: { createFormData }
+        params: {
+          createFormData: JSON.stringify(createFormData)
+        }
       })
     },
     // 保存编辑
@@ -446,6 +409,11 @@ export default {
 
   .el-dialog__body {
     padding: 30px 40px;
+
+    .title {
+      margin-top: -40px;
+      margin-bottom: 40px;
+    }
   }
 }
 </style>

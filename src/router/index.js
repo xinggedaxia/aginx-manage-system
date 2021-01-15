@@ -95,7 +95,7 @@ export const constantRoutes = [
         component: () => import('@/views/questions-manage/component/add-question')
       },
       {
-        path: 'edit',
+        path: 'edit/:createFormData',
         name: 'EditQuestion',
         hidden: true, // 不在侧边栏显示
         component: () => import('@/views/questions-manage/component/edit-question')

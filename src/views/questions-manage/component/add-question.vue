@@ -57,7 +57,7 @@
               </el-form-item>
             </el-col>
             <el-col :lg="24">
-              <markdown-editor ref="markdown" :answer.sync="createForm.answer" :html.sync="createForm.html" height="600px" />
+              <markdown-editor :answer.sync="createForm.answer" height="600px" />
             </el-col>
           </el-row>
         </el-form>
@@ -81,7 +81,6 @@ export default {
         title: '',
         type: 'html',
         level: 1,
-        html: '',
         answer: '## 答案\n' +
           '在此输入答案\n' +
           '```javascript \n' +
@@ -104,7 +103,7 @@ export default {
   },
   methods: {
     handleSave() {
-      alert(this.createForm.html)
+      alert(this.createForm.answer)
     },
     handleQuit() {
       // this.$router.push({ name: 'QuestionsManage' })
