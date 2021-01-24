@@ -2,6 +2,9 @@
 
 > aginx后台管理系统
 
+##在线预览
+http://aginx.cn/manage
+
 ## 安装依赖
 
 ```bash
