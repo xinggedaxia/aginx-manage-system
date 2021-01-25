@@ -82,29 +82,23 @@
           <el-button type="primary" @click="createCode">生成代码</el-button>
         </el-form-item>
         <br>
-        <!--用于存放代码，让剪切功能生效-->
-        <textarea
-          id="inputDom"
-          type="text"
-          :value="renderCode"
-          style="height: 1px;overflow:hidden;position:absolute;top:9999px"
-        />
       </el-form>
-<!--      <h2>-->
-<!--        生成代码-然后把代码手动整到previewCode-这下面会呈现效果-->
-<!--      </h2>-->
-<!--      <Test />-->
+      <!--用于存放代码，让剪切功能生效-->
+      <textarea
+        id="inputDom"
+        type="text"
+        :value="renderCode"
+        style="height: 1px;overflow:hidden;position:fixed;top:1200px"
+      />
     </el-card>
   </div>
 </template>
 
 <script>
 import startRender from './template'
-import Test from './template/previewCode'
 
 export default {
   name: 'CreateForm',
-  components: { Test },
   data() {
     return {
       showReview: false,
