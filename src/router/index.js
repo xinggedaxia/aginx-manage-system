@@ -61,7 +61,7 @@ export const constantRoutes = [
       {
         path: '',
         name: 'AccountManage',
-        component: () => import('@/views/account-manage/index'),
+        component: () => import('@/views/account-manage'),
         meta: { title: '账号管理', icon: 'user' }
       }
     ]
@@ -79,26 +79,39 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/questions-manage',
+    path: '/question-manage',
     component: Layout,
+    meta: { title: '题目管理', icon: 'form' },
     children: [
       {
-        path: '',
-        name: 'QuestionsManage',
-        component: () => import('@/views/questions-manage'),
-        meta: { title: '题目管理', icon: 'form' }
+        path: 'maintenance',
+        name: 'QuestionMaintenance',
+        component: () => import('@/views/question-manage/question-maintenance'),
+        meta: { title: '题目维护' }
+      },
+      {
+        path: 'type',
+        name: 'QuestionType',
+        component: () => import('@/views/question-manage/question-type'),
+        meta: { title: '题目类型' }
+      },
+      {
+        path: 'feedback',
+        name: 'QuestionFeedback',
+        component: () => import('@/views/question-manage/question-feedback'),
+        meta: { title: '题目反馈' }
       },
       {
         path: 'add',
         name: 'AddQuestion',
         hidden: true, // 不在侧边栏显示
-        component: () => import('@/views/questions-manage/component/add-question')
+        component: () => import('@/views/question-manage/component/add-question')
       },
       {
         path: 'edit/:createFormData',
         name: 'EditQuestion',
         hidden: true, // 不在侧边栏显示
-        component: () => import('@/views/questions-manage/component/edit-question')
+        component: () => import('@/views/question-manage/component/edit-question')
       }
     ]
   },
@@ -123,18 +136,6 @@ export const constantRoutes = [
         name: 'WebsiteFeedback',
         component: () => import('@/views/website-feedback'),
         meta: { title: '网站反馈', icon: 'el-icon-document' }
-      }
-    ]
-  },
-  {
-    path: '/question-feedback',
-    component: Layout,
-    children: [
-      {
-        path: '',
-        name: 'QuestionFeedback',
-        component: () => import('@/views/question-feedback'),
-        meta: { title: '题目反馈', icon: 'el-icon-document' }
       }
     ]
   },

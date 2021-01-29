@@ -56,7 +56,7 @@ export default function(config) {
 
   return `
         <!--编辑新增共用弹窗-->
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" custom-class="base-dialog ${hyphenate(config.pageName)}-dialog">
+      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" custom-class="base-dialog dialog-col-${config.cols}">
         <el-form
           ref="dataForm"
           :rules="rules"

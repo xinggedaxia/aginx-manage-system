@@ -140,7 +140,7 @@
 
 <script>
 
-// import { fetchList, createAccount, updateAccount } from '@/api/question-manage.js' fixme:替换为你的接口地址
+import { fetchList, createAccount, updateAccount } from '@/api/question-manage'
 import Pagination from '@/components/Pagination' // 分页
 import MarkdownEditor from '@/components/MarkdownEditor'
 
