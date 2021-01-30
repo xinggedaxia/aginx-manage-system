@@ -61,7 +61,16 @@
         <el-table-column v-slot="{row}" label="状态" prop="adminStatus">
           <el-badge is-dot :type="row.adminStatus===2?'danger':'success'">{{ row.adminStatus|statusFilter }}</el-badge>
         </el-table-column>
-        <el-table-column label="用户qq" prop="adminQq" />
+        <el-table-column v-slot="{row}" label="用户qq" prop="adminQq">
+          {{ row.adminQq || '未设置' }}
+        </el-table-column>
+        <el-table-column v-slot="{row}" label="备注" prop="note" width="400">
+          <template>
+            <el-tooltip class="item" effect="dark" :content="row.note" placement="top-start">
+              <span>{{ row.note }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
@@ -144,6 +153,13 @@
               placeholder="输入qq"
             />
           </el-form-item>
+          <el-form-item label="备注:" prop="note">
+            <el-input
+              v-model="temp.note"
+              type="textarea"
+              placeholder="输入备注"
+            />
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">
@@ -206,7 +222,8 @@ export default {
         'adminName': '',
         'adminQq': '',
         'role': 2,
-        'adminStatus': 1
+        'adminStatus': 1,
+        'note': ''
       }, // 存储新增和编辑框的数据
       textMap: {
         update: '编辑',
@@ -265,7 +282,8 @@ export default {
         'adminName': '',
         'adminQq': '',
         'role': 2,
-        'adminStatus': 1
+        'adminStatus': 1,
+        'note': ''
       }
     },
     // 重置查询
@@ -291,7 +309,8 @@ export default {
             name: this.temp.adminName,
             qq: this.temp.adminQq,
             role: this.temp.role,
-            status: this.temp.adminStatus
+            status: this.temp.adminStatus,
+            note: this.temp.note
           }).then(() => {
             this.buttonLoading = false
             this.dialogFormVisible = false
@@ -328,7 +347,8 @@ export default {
             adminId: tempData.adminId,
             role: tempData.role,
             status: tempData.adminStatus,
-            qq: tempData.adminQq
+            qq: tempData.adminQq,
+            note: tempData.note
           }
           updateAccount(updateData).then((res) => {
             this.dialogFormVisible = false
@@ -382,6 +402,12 @@ export default {
 
 .account-manage-page .el-badge {
   padding-left: 15px;
+}
+
+.el-table {
+  ::v-deep.cell {
+    white-space: nowrap;
+  }
 }
 
 .account-manage-page ::v-deep.el-badge__content {
