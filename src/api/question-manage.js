@@ -49,3 +49,10 @@ export function addQuestion(data) {
     data
   })
 }
+// 获取所有题型
+export function getAllQuestion() {
+  return request({
+    url: '/quesType/getAllQuesType.do',
+    method: 'get'
+  })
+}

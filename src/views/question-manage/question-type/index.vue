@@ -65,15 +65,9 @@
             <el-button v-else size="mini" type="success" @click="handleModifyStatus(row,'2')">
               启用
             </el-button>
-            <el-popconfirm
-              title="确认删除吗？"
-              style="margin-left:10px;"
-              @confirm="handleDelete(row)"
-            >
-              <el-button slot="reference" size="mini" type="danger">
-                删除
-              </el-button>
-            </el-popconfirm>
+            <el-button slot="reference" size="mini" type="danger" @click="handleDeleteConfirm(row)">
+              删除
+            </el-button>
           </template>
         </el-table-column>
 
@@ -208,6 +202,17 @@ export default {
   },
 
   methods: {
+    handleDeleteConfirm({ id, type }) {
+      this.$confirm('删除题型可能导致系统运行异常,确认删除?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleDelete(id, type)
+      }).catch(() => {
+
+      })
+    },
     // 点击搜索
     handleSearch() {
       this.listQuery.pageNum = 1 // 重置pageNum
@@ -248,7 +253,7 @@ export default {
         if (valid) {
           this.buttonLoading = true
           addQuestionType(this.createFormData).then(() => {
-            this.dialogFormVisible = false
+            // this.dialogFormVisible = false
             this.buttonLoading = false
             this.getList()
             this.$notify({
@@ -316,7 +321,7 @@ export default {
       })
     },
     // 删除数据
-    handleDelete({ id, type }) {
+    handleDelete(id, type) {
       this.listLoading = true
       deleteQuestionType({ id, type }).then(() => {
         this.dialogFormVisible = false

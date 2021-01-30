@@ -57,7 +57,8 @@
               </el-form-item>
             </el-col>
             <el-col :lg="24">
-              <markdown-editor :answer.sync="createForm.answer" height="600px" />
+              <!--实时更新会导致光标跑到末尾，不能用.sync-->
+              <markdown-editor ref="markdown" :answer="createForm.answer" height="600px" @editorChange="editorChange" />
             </el-col>
           </el-row>
         </el-form>
@@ -71,7 +72,7 @@
 import Sticky from '@/components/Sticky' // 粘性header组件
 import MarkdownEditor from '@/components/MarkdownEditor'
 import { MessageBox } from 'element-ui'
-import store from '@/store'
+import { getAllQuestion } from '@/api/question-manage'
 
 export default {
   name: 'AddQuestion',
@@ -85,16 +86,7 @@ export default {
         level: 1,
         answer: '## 答案\n\n在此输入答案\n\n``` javascript\nconst a = 1;\nlet b = 1 + 1;\n```\n\n## 解析\n\n在此输入解析'
       },
-      questionTypeList: [
-        {
-          label: 'html',
-          value: 'html'
-        },
-        {
-          label: 'js',
-          value: 'js'
-        }
-      ]
+      questionTypeList: []
     }
   },
   watch: {
@@ -106,17 +98,26 @@ export default {
       }
     }
   },
-  mounted() {
-    this.notSave = false
+  created() {
+    getAllQuestion().then(res => {
+      this.questionTypeList = res.data
+    })
   },
   methods: {
+    editorChange() {
+      if (this.createForm.answer !== this.$refs.markdown.editorValue) {
+        this.notSave = true
+      }
+    },
     handleSave() {
+      this.createForm.answer = this.$refs.markdown.editorValue
       alert(this.createForm.answer)
-      this.notSave = false
+      this.$nextTick(() => {
+        this.notSave = false
+      })
     },
     handleQuit() {
       this.$router.push({ name: 'QuestionMaintenance' })
-      // this.$router.go(-1)
     }
   },
   beforeRouteLeave(to, from, next) {

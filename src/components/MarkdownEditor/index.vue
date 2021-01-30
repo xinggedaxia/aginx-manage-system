@@ -42,6 +42,11 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      editorValue: this.answer
+    }
+  },
   watch: {
     previewStyle(newValue) {
       this.editor.changePreviewStyle(newValue)
@@ -66,9 +71,11 @@ export default {
     } else {
       this.editor = new Editor(options)
       this.editor.setMarkdown(this.answer)
+      // 监听输入
       this.editor.on('change', () => {
-        // fixme:无法保留高亮代码的样式，目前只能在官网使用editor来回显
-        this.$emit('update:answer', this.editor.getMarkdown())
+        // 存储当前编辑器的值，在父组件点击保存时，通过$refs获取
+        this.editorValue = this.editor.getMarkdown()
+        this.$emit('editorChange')
       })
     }
   }

@@ -57,7 +57,13 @@
               </el-form-item>
             </el-col>
             <el-col :lg="24">
-              <markdown-editor ref="markdown" :answer.sync="createForm.answer" :html.sync="createForm.html" height="600px" />
+              <markdown-editor
+                ref="markdown"
+                :answer.sync="createForm.answer"
+                :html.sync="createForm.html"
+                height="600px"
+                @editorChange="editorChange"
+              />
             </el-col>
           </el-row>
         </el-form>
@@ -71,40 +77,81 @@
 <script>
 import Sticky from '@/components/Sticky' // 粘性header组件
 import MarkdownEditor from '@/components/MarkdownEditor'
+import { getAllQuestion } from '@/api/question-manage'
+import { MessageBox } from 'element-ui'
 
 export default {
   name: 'EditQuestion',
   components: { Sticky, MarkdownEditor },
   data() {
     return {
+      notSave: false, // 未保存标识
       createForm: {
         title: '',
         type: '',
         level: 1,
         answer: ''
       },
-      questionTypeList: [
-        {
-          label: 'html',
-          value: 'html'
-        },
-        {
-          label: 'js',
-          value: 'js'
+      firstChange: true,
+      firstWatchChange: true,
+      questionTypeList: []
+    }
+  },
+  watch: {
+    createForm: {
+      deep: true,
+      immediate: false,
+      handler: function() {
+        // 忽略传参触发的事件
+        if (this.firstWatchChange) {
+          this.firstWatchChange = false
+        } else {
+          this.notSave = true
         }
-      ]
+      }
     }
   },
   created() {
     this.createForm = JSON.parse(this.$route.params.createFormData) || {}
+    getAllQuestion().then(res => {
+      this.questionTypeList = res.data
+    })
   },
   methods: {
     handleSave() {
+      this.createForm.answer = this.$refs.markdown.editorValue
       alert(this.createForm.answer)
+      this.$nextTick(() => {
+        this.notSave = false
+      })
+    },
+    editorChange() {
+      if (this.createForm.answer !== this.$refs.markdown.editorValue) {
+        // 忽略编辑器格式化数据触发的事件
+        if (this.firstChange) {
+          this.firstChange = false
+        } else {
+          this.notSave = true
+        }
+      }
     },
     handleQuit() {
-      // this.$router.push({ name: 'QuestionsManage' })
-      this.$router.go(-1)
+      this.$router.push({ name: 'QuestionMaintenance' })
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.notSave) {
+      MessageBox.confirm('你还没保存！', '确认离开?', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
+      next()
     }
   }
 
@@ -117,6 +164,7 @@ export default {
   margin-top: -20px;
   padding: 20px 0;
 }
+
 .md-input {
   margin-left: -75px;
 }
