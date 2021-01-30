@@ -40,8 +40,8 @@
         style="width: 100%;"
       >
         <el-table-column label="题目类型" prop="type" />
-        <el-table-column v-slot="{row}" label="查看权限" prop="permissions">
-          {{ row.permissions|permissionsFilter }}
+        <el-table-column v-slot="{row}" label="查看权限" prop="permission">
+          {{ row.permission|permissionsFilter }}
         </el-table-column>
         <el-table-column label="排序" prop="order" />
         <el-table-column v-slot="{row}" label="状态" prop="status">
@@ -50,7 +50,7 @@
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
-          <template v-slot="{row,$index}">
+          <template v-slot="{row}">
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               编辑
             </el-button>
@@ -58,17 +58,17 @@
               v-if="row.status=='2'"
               size="mini"
               type="warning"
-              @click="handleModifyStatus(row,'published')"
+              @click="handleModifyStatus(row,'1')"
             >
               停用
             </el-button>
-            <el-button v-else size="mini" type="success" @click="handleModifyStatus(row,'draft')">
+            <el-button v-else size="mini" type="success" @click="handleModifyStatus(row,'2')">
               启用
             </el-button>
             <el-popconfirm
               title="确认删除吗？"
               style="margin-left:10px;"
-              @confirm="handleDelete(row,$index)"
+              @confirm="handleDelete(row)"
             >
               <el-button slot="reference" size="mini" type="danger">
                 删除
@@ -102,8 +102,8 @@
           <el-form-item label="题目类型:" prop="type">
             <el-input v-model="createFormData.type" placeholder="请输入题目类型" />
           </el-form-item>
-          <el-form-item label="查看权限:" prop="permissions">
-            <el-select v-model="createFormData.permissions" placeholder="请选择查看权限">
+          <el-form-item label="查看权限:" prop="permission">
+            <el-select v-model="createFormData.permission" placeholder="请选择查看权限">
               <el-option
                 v-for="{label,value} in optionGroup.permissionsList"
                 :key="value"
@@ -142,7 +142,7 @@
 
 <script>
 const options = JSON.parse(sessionStorage.getItem('options'))
-import { add } from '@/api/question-manage'
+import { getQuestionType, addQuestionType, updateQuestionType, deleteQuestionType } from '@/api/question-manage'
 import Pagination from '@/components/Pagination' // 分页
 
 export default {
@@ -158,20 +158,7 @@ export default {
   },
   data() {
     return {
-      list: [
-        {
-          type: 'html',
-          permissions: '1',
-          order: 0,
-          status: '1'
-        },
-        {
-          type: 'js',
-          permissions: '2',
-          order: 1,
-          status: '2'
-        }
-      ], // 表格数据
+      list: [], // 表格数据
       listLoading: true, // 表格加载状态
       buttonLoading: false, // 弹窗按钮加载状态
       listQuery: {
@@ -192,19 +179,19 @@ export default {
       }, // 存放选项的数据
       createFormData: {
         type: '',
-        permissions: '1',
+        permission: '1',
         order: 1,
         status: '1'
       }, // 存储新增和编辑框的数据
       createFormDataTemp: {
         type: '',
-        permissions: '1',
+        permission: '1',
         order: 1,
         status: '1'
       }, // 用于重置新增的数据
       rules: {
         type: [{ required: true, message: '请输入题目类型', trigger: 'blur' }],
-        permissions: [{ required: true, message: '请选择查看权限', trigger: 'change' }],
+        permission: [{ required: true, message: '请选择查看权限', trigger: 'change' }],
         order: [{ required: true, message: '请输入排序', trigger: 'blur' }],
         status: [{ required: true, message: '请输入状态', trigger: 'blur' }]
       }, // 新增和编辑框的规则
@@ -217,8 +204,7 @@ export default {
     }
   },
   created() {
-    this.listLoading = false// fixme:对好接口后移除这行代码
-    // this.getList()
+    this.getList()
   },
 
   methods: {
@@ -230,9 +216,9 @@ export default {
     // 获取列表
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      getQuestionType(this.listQuery).then(response => {
         this.list = response.data
-        this.total = response.data.total
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -261,7 +247,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.buttonLoading = true
-          createApi(this.createFormData).then(() => {
+          addQuestionType(this.createFormData).then(() => {
             this.dialogFormVisible = false
             this.buttonLoading = false
             this.getList()
@@ -294,7 +280,7 @@ export default {
         if (valid) {
           this.buttonLoading = true
           const tempData = { ...this.createFormData }
-          updateApi(tempData).then(() => {
+          updateQuestionType(tempData).then(() => {
             this.dialogFormVisible = false
             this.buttonLoading = false
             this.getList()
@@ -311,10 +297,28 @@ export default {
         }
       })
     },
-    // 删除数据
-    handleDelete(row, index) {
+    // 更新状态
+    handleModifyStatus(row, status) {
+      console.log(row)
       this.listLoading = true
-      deleteApi(row.id).then(() => {
+      updateQuestionType({ ...row, status }).then(() => {
+        this.listLoading = false
+        this.getList()
+        this.$notify({
+          title: '成功',
+          message: '状态更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch((e) => {
+        this.listLoading = false
+        console.log(e)
+      })
+    },
+    // 删除数据
+    handleDelete({ id, type }) {
+      this.listLoading = true
+      deleteQuestionType({ id, type }).then(() => {
         this.dialogFormVisible = false
         this.listLoading = false
         if (this.list.length === 1 && this.listQuery.pageNumber !== 1) {

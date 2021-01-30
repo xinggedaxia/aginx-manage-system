@@ -42,11 +42,11 @@
                   <el-input v-model="listQuery.createBy" placeholder="请输入创建人" @keyup.enter.native="handleSearch" />
                 </el-form-item>
               </el-col>
-              <el-col :md="8" :sm="24">
-                <el-form-item label="更新人:">
-                  <el-input v-model="listQuery.updateBy" placeholder="请输入更新人" @keyup.enter.native="handleSearch" />
-                </el-form-item>
-              </el-col>
+              <!--              <el-col :md="8" :sm="24">-->
+              <!--                <el-form-item label="更新人:">-->
+              <!--                  <el-input v-model="listQuery.updateBy" placeholder="请输入更新人" @keyup.enter.native="handleSearch" />-->
+              <!--                </el-form-item>-->
+              <!--              </el-col>-->
             </template>
 
             <!--查询操作按钮-->
@@ -77,7 +77,13 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="标题" prop="title" />
+        <el-table-column v-slot="{row}" label="标题" prop="title" width="500">
+          <template>
+            <el-tooltip class="item" effect="dark" :content="row.title" placement="top-start">
+              <span>{{ row.title }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column v-slot="{row}" label="类型" prop="type">
           {{ row.type | typeFilter }}
         </el-table-column>
@@ -162,7 +168,7 @@ export default {
       title: '', // 弹窗标题
       answer: '', // 弹窗显示内容
       list: [{
-        title: '什么是html?',
+        title: '什么是html?什么是html?什么是html?什么是html?什么是html?什么是html?html?什么是html?',
         type: 'html',
         level: 1,
         answer: '## 答案\n' +
@@ -235,16 +241,7 @@ export default {
             value: '0'
           }
         ],
-        levelList: [
-          {
-            label: '条件1',
-            value: '1'
-          },
-          {
-            label: '条件2',
-            value: '0'
-          }
-        ]
+        levelList: options.questionLevel.list
       }, // 存放选项的数据
       createFormData: {
         title: '',
@@ -403,6 +400,13 @@ export default {
 
 <!--局部样式-->
 <style lang="scss" scoped>
+
+.el-table{
+  ::v-deep.cell{
+    white-space: nowrap;
+  }
+}
+
 .question-manage ::v-deep.question-manage-dialog {
 
   width: 1100px;

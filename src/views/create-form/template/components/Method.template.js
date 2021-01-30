@@ -74,7 +74,7 @@ export default function(config) {
     },`
   const deleteMethod = `
     // 删除数据
-    handleDelete(row, index) {
+    handleDelete(row) {
       this.listLoading = true
       deleteApi(row.id).then(() => {
           this.dialogFormVisible = false
@@ -206,7 +206,7 @@ export default function(config) {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data
-        this.total = response.data.total
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false

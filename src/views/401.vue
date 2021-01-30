@@ -1,16 +1,15 @@
 <template>
   <div class="errPage-container">
     <el-row>
-      <el-col :span="12">
+      <el-col :span="24">
         <h1 class="text-jumbo text-ginormous">
-          Oops!
+          Hello, {{ this.$store.state.user.name }}
         </h1>
-        <h2>该页面暂不对你开放</h2>
-        <h2>你可以随意查看其它页面</h2>
+        <h1 class="text-jumbo text-ginormous">Welcome To Aginx !</h1>
       </el-col>
-      <el-col :span="12">
-        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">
-      </el-col>
+      <!--      <el-col :span="12">-->
+      <!--        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">-->
+      <!--      </el-col>-->
     </el-row>
   </div>
 </template>
@@ -63,8 +62,8 @@ export default {
   }
 
   .text-jumbo {
-    font-size: 60px;
-    font-weight: 700;
+    font-size: 50px;
+    font-weight: 600;
     color: #484848;
   }
 

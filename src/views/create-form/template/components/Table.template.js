@@ -60,7 +60,7 @@ export default function(config) {
         tableButtonsCode += `
             <el-popconfirm
               title="确认删除吗？"
-              @confirm="handleDelete(row,$index)"
+              @confirm="handleDelete(row)"
               style="${config.tableButtons.indexOf('delete') === 0 ? '' : 'margin-left:10px;'}${config.tableButtons.lastIndexOf('delete') === config.tableButtons.length - 1 ? '' : 'margin-right:10px;'}"
             >
               <el-button slot="reference" size="mini" type="danger">
@@ -90,7 +90,7 @@ export default function(config) {
         ${config.tableButtons.length > 0 ? `
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="${20 + config.tableButtons.length * 70}" class-name="small-padding fixed-width">
-          <template v-slot="{row,$index}">
+          <template v-slot="{row}">
            ${tableButtonsCode.trim()}
           </template>
         </el-table-column>` : ''}

@@ -92,7 +92,7 @@ export default {
       list: [{
         username: '张三',
         question: '什么是html?',
-        feedback: '答案太捞了',
+        feedback: '答案不准确',
         status: '待处理',
         createTime: '2020-12-31'
       }], // 表格数据

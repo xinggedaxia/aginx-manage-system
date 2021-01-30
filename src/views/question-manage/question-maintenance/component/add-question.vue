@@ -61,7 +61,6 @@
             </el-col>
           </el-row>
         </el-form>
-
       </div>
 
     </el-card>
@@ -71,23 +70,20 @@
 <script>
 import Sticky from '@/components/Sticky' // 粘性header组件
 import MarkdownEditor from '@/components/MarkdownEditor'
+import { MessageBox } from 'element-ui'
+import store from '@/store'
 
 export default {
   name: 'AddQuestion',
   components: { Sticky, MarkdownEditor },
   data() {
     return {
+      notSave: false, // 未保存标识
       createForm: {
         title: '',
         type: 'html',
         level: 1,
-        answer: '## 答案\n' +
-          '在此输入答案\n' +
-          '```javascript \n' +
-          'const a = 1;\nlet b = 1 + 1;\n' +
-          '```\n' +
-          '## 解析\n' +
-          '在此输入解析\n'
+        answer: '## 答案\n\n在此输入答案\n\n``` javascript\nconst a = 1;\nlet b = 1 + 1;\n```\n\n## 解析\n\n在此输入解析'
       },
       questionTypeList: [
         {
@@ -101,13 +97,41 @@ export default {
       ]
     }
   },
+  watch: {
+    createForm: {
+      deep: true,
+      immediate: false,
+      handler: function() {
+        this.notSave = true
+      }
+    }
+  },
+  mounted() {
+    this.notSave = false
+  },
   methods: {
     handleSave() {
       alert(this.createForm.answer)
+      this.notSave = false
     },
     handleQuit() {
-      // this.$router.push({ name: 'QuestionsManage' })
-      this.$router.go(-1)
+      this.$router.push({ name: 'QuestionMaintenance' })
+      // this.$router.go(-1)
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.notSave) {
+      MessageBox.confirm('你还没保存！', '确认离开?', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        next()
+      }).catch(() => {
+        next(false)
+      })
+    } else {
+      next()
     }
   }
 }
