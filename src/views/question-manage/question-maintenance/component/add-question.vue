@@ -17,7 +17,7 @@
 
       <!--表单-->
       <div class="createPost-main-container">
-        <el-form ref="form" label-width="90px">
+        <el-form ref="dataForm" label-width="90px" :rules="rules" :model="createForm">
           <el-row>
             <el-col :span="24">
               <el-form-item label="题目标题:" prop="title">
@@ -72,7 +72,7 @@
 import Sticky from '@/components/Sticky' // 粘性header组件
 import MarkdownEditor from '@/components/MarkdownEditor'
 import { MessageBox } from 'element-ui'
-import { getAllQuestion } from '@/api/question-manage'
+import { getAllQuestion, addQuestion } from '@/api/question-manage'
 
 export default {
   name: 'AddQuestion',
@@ -82,9 +82,14 @@ export default {
       notSave: false, // 未保存标识
       createForm: {
         title: '',
-        type: 'html',
+        type: 'HTML',
         level: 1,
-        answer: '## 答案\n\n在此输入答案\n\n``` javascript\nconst a = 1;\nlet b = 1 + 1;\n```\n\n## 解析\n\n在此输入解析'
+        answer: '## 答案\n\n在此输入答案\n\n## 解析\n\n在此输入解析'
+      },
+      rules: {
+        title: [{ required: true, message: '请输入题目标题', trigger: 'blur' }],
+        type: [{ required: true, message: '请选择题目类型', trigger: 'change' }],
+        level: [{ required: true, message: '请选择题目难度', trigger: 'change' }]
       },
       questionTypeList: []
     }
@@ -111,9 +116,21 @@ export default {
     },
     handleSave() {
       this.createForm.answer = this.$refs.markdown.editorValue
-      alert(this.createForm.answer)
-      this.$nextTick(() => {
-        this.notSave = false
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          addQuestion(this.createForm).then((res) => {
+            this.$notify({
+              title: '成功',
+              message: '题目保存成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.notSave = false
+          }).catch((e) => {
+            console.log(e)
+            this.notSave = false
+          })
+        }
       })
     },
     handleQuit() {

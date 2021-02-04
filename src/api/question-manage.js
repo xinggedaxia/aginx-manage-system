@@ -36,6 +36,13 @@ export function deleteQuestionType(data) {
     data
   })
 }
+// 获取所有题型
+export function getAllQuestion() {
+  return request({
+    url: '/quesType/getAllQuesType.do',
+    method: 'get'
+  })
+}
 
 /*
   题目维护
@@ -44,15 +51,33 @@ export function deleteQuestionType(data) {
 // 新增
 export function addQuestion(data) {
   return request({
-    url: '/ques/addQues.do',
+    url: '/question/addQuestion.do',
     method: 'post',
     data
   })
 }
-// 获取所有题型
-export function getAllQuestion() {
+// 查询
+export function getQuestion(params) {
   return request({
-    url: '/quesType/getAllQuesType.do',
-    method: 'get'
+    url: '/question/getQuestionList.do',
+    method: 'get',
+    params
   })
 }
+// 更新题目
+export function updateQuestion(data) {
+  return request({
+    url: '/question/updateQuestion.do',
+    method: 'post',
+    data
+  })
+}
+// 删除
+export function deleteQuestion(data) {
+  return request({
+    url: '/question/deleteQuestion.do',
+    method: 'post',
+    data
+  })
+}
+

@@ -91,9 +91,14 @@
           {{ row.level | levelFilter }}
         </el-table-column>
         <el-table-column label="创建人" prop="createBy" />
-        <el-table-column label="创建日期" prop="createTime" />
+        <el-table-column v-slot="{row}" label="创建日期" prop="createdAt" width="160">
+          {{ row.createdAt | createdAtFilter }}
+        </el-table-column>
         <el-table-column label="更新人" prop="updateBy" />
-        <el-table-column label="更新日期" prop="updateTime" />
+        <el-table-column v-slot="{row}" label="更新日期" prop="updatedAt" width="160">
+          {{ row.updatedAt | updatedAtFilter }}
+
+        </el-table-column>
 
         <!--表格操作列-->
         <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
@@ -146,9 +151,10 @@
 
 <script>
 
-import { fetchList, createAccount, updateAccount } from '@/api/question-manage'
+import { getQuestion, deleteQuestion, getAllQuestion } from '@/api/question-manage'
 import Pagination from '@/components/Pagination' // 分页
 import MarkdownEditor from '@/components/MarkdownEditor'
+import { parseTime } from '@/utils'
 
 const options = JSON.parse(sessionStorage.getItem('options'))
 
@@ -161,54 +167,19 @@ export default {
     },
     levelFilter: function(level) {
       return options.questionLevel.map[level]
+    },
+    createdAtFilter: function(createdAt) {
+      return parseTime(new Date(createdAt))
+    },
+    updatedAtFilter: function(updatedAt) {
+      return parseTime(new Date(updatedAt))
     }
   },
   data() {
     return {
       title: '', // 弹窗标题
       answer: '', // 弹窗显示内容
-      list: [{
-        title: '什么是html?什么是html?什么是html?什么是html?什么是html?什么是html?html?什么是html?',
-        type: 'html',
-        level: 1,
-        answer: '## 答案\n' +
-          '超文本标记语言（英语：HyperText Markup Language，简称：HTML）是一种用于创建网页的标准标记语言。HTML是一种基础技术，常与CSS、JavaScript一起被众多网站用于设计网页、网页应用程序以及移动应用程序的用户界面[3]。网页浏览器可以读取HTML文件，并将其渲染成可视化网页。HTML描述了一个网站的结构语义随着线索的呈现，使之成为一种标记语言而非编程语言。\n' +
-          '\n' +
-          'HTML元素是构建网站的基石。HTML允许嵌入图像与对象，并且可以用于创建交互式表单，它被用来结构化信息——例如标题、段落和列表等等，也可用来在一定程度上描述文档的外观和语义。HTML的语言形式为尖括号包围的HTML元素（如<html>），浏览器使用HTML标签和脚本来诠释网页内容，但不会将它们显示在页面上。\n' +
-          '\n' +
-          'HTML可以嵌入如JavaScript的脚本语言，它们会影响HTML网页的行为。网页浏览器也可以引用层叠样式表（CSS）来定义文本和其它元素的外观与布局。维护HTML和CSS标准的组织万维网联盟（W3C）鼓励人们使用CSS替代一些用于表现的HTML元素[4]。\n' +
-          '\n' +
-          '## 解析\n' +
-          'HTML的首个公开描述出现于一个名为HTML Tags页面存档备份，存于互联网档案馆的文件中，由蒂姆·伯纳斯-李于1991年底提及[8][9]。它描述18个元素，包括HTML初始的、相对简单的设计。除了超链接标签外，其他设计都深受CERN内部一个以标准通用标记语言（SGML）为基础的文件格式SGMLguid的影响。这些元素仍有11个存在于HTML 4中[10]。\n' +
-          '\n' +
-          '伯纳斯-李认为HTML是SGML的一个应用程序。1993年中期互联网工程任务组（IETF）发布首个HTML规范的提案：“超文本标记语言（HTML）”互联网草案页面存档备份，存于互联网档案馆，由伯纳斯-李与丹·康纳利撰写。其中包括一个SGML文档类型定义来定义语法[11]。草案于6个月后过期，不过值得注意的是其对NCSA Mosaic浏览器嵌入在线图像的自定义标签的认可，这反映IETF把标准立足于成功原型的理念[12]。同样，戴夫·拉格特在1993年末提出的与之竞争的互联网草案“HTML+（超文本标记格式）”建议规范已经实现的功能，如表格与填写表单[13]。\n' +
-          '\n' +
-          '在HTML和HTML+的草案于1994年初到期后，IETF创建一个HTML工作组，并在1995年完成"HTML 2.0"，这是第一个旨在成为对其后续实现标准的依据的HTML规范[14]。\n' +
-          '\n' +
-          '在IETF的主持下，HTML标准的进一步发展因竞争利益而遭受停滞。自1996年起，HTML规范一直由万维网联盟（W3C）维护，并由商业软件厂商出资[15]。不过在2000年，HTML也成为国际标准（ISO/ IEC15445：2000）。HTML 4.01于1999年末发布，进一步的勘误版本于2001年发布。2004年，网页超文本应用技术工作小组（WHATWG）开始开发HTML5，并在2008年与W3C共同交付，2014年10月28日完成标准化[16]。\n' +
-          '\n' +
-          '## 参考资料\n' +
-          '[维基百科](https://zh.wikipedia.org/wiki/HTML#发展)',
-        createBy: 'xingge',
-        createTime: '2020-12-31',
-        updateBy: '-',
-        updateTime: '-'
-      }, {
-        title: '什么是js?',
-        type: 'js',
-        level: 2,
-        answer: '## 答案\n' +
-          '在此输入答案\n' +
-          '```javascript \n' +
-          'const a = 1;\nlet b = 1 + 1;\n' +
-          '```\n' +
-          '## 解析\n' +
-          '在此输入解析\n',
-        createBy: 'xingge',
-        createTime: '2020-12-31',
-        updateBy: '-',
-        updateTime: '-'
-      }], // 表格数据
+      list: [], // 表格数据
       listLoading: true, // 表格加载状态
       listQuery: {
         pageNum: 1,
@@ -231,37 +202,20 @@ export default {
       total: 0, // 总数据条数
       advanced: false, // 是否展开高级搜索条件
       optionGroup: {
-        typeList: [
-          {
-            label: '条件1',
-            value: '1'
-          },
-          {
-            label: '条件2',
-            value: '0'
-          }
-        ],
+        typeList: [],
         levelList: options.questionLevel.list
       }, // 存放选项的数据
       createFormData: {
         title: '',
         type: 0,
         level: 0,
-        answer: '',
-        createBy: '',
-        createTime: '',
-        updateBy: '',
-        updateTime: ''
+        answer: ''
       }, // 存储新增和编辑框的数据
       createFormDataTemp: {
         title: '',
         type: 0,
         level: 0,
-        answer: '',
-        createBy: '',
-        createTime: '',
-        updateBy: '',
-        updateTime: ''
+        answer: ''
       }, // 用于重置新增的数据
       rules: {
         title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
@@ -278,11 +232,17 @@ export default {
     }
   },
   created() {
-    this.listLoading = false// fixme:对好接口后移除这行代码
-    // this.getList()
+    this.getList()
+    this.initQuestionType()
   },
 
   methods: {
+    // 初始化题型
+    initQuestionType() {
+      getAllQuestion().then(res => {
+        this.optionGroup.typeList = res.data
+      })
+    },
     // 题目预览
     handlePreview(row) {
       this.dialogFormVisible = true
@@ -297,9 +257,9 @@ export default {
     // 获取列表
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
+      getQuestion(this.listQuery).then(response => {
         this.list = response.data
-        this.total = response.data.total
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.listLoading = false
@@ -378,7 +338,7 @@ export default {
     },
     // 删除数据
     handleDelete(row, index) {
-      deleteApi(row.id).then(() => {
+      deleteQuestion({ id: row.id }).then(() => {
         this.dialogFormVisible = false
         if (this.list.length === 1 && this.listQuery.pageNumber !== 1) {
           this.listQuery.pageNumber--
@@ -417,6 +377,11 @@ export default {
     .title {
       margin-top: -40px;
       margin-bottom: 40px;
+    }
+  }
+  .tui-editor-contents {
+    span,li{
+      font-size: 15px;
     }
   }
 }

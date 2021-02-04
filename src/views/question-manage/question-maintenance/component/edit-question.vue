@@ -17,7 +17,7 @@
 
       <!--表单-->
       <div class="createPost-main-container">
-        <el-form ref="form" label-width="90px">
+        <el-form ref="dataForm" label-width="90px" :rules="rules" :model="createForm">
           <el-row>
             <el-col :span="24">
               <el-form-item label="题目标题:" prop="title">
@@ -77,7 +77,7 @@
 <script>
 import Sticky from '@/components/Sticky' // 粘性header组件
 import MarkdownEditor from '@/components/MarkdownEditor'
-import { getAllQuestion } from '@/api/question-manage'
+import { addQuestion, getAllQuestion, updateQuestion } from '@/api/question-manage'
 import { MessageBox } from 'element-ui'
 
 export default {
@@ -94,7 +94,12 @@ export default {
       },
       firstChange: true,
       firstWatchChange: true,
-      questionTypeList: []
+      questionTypeList: [],
+      rules: {
+        title: [{ required: true, message: '请输入题目标题', trigger: 'blur' }],
+        type: [{ required: true, message: '请选择题目类型', trigger: 'change' }],
+        level: [{ required: true, message: '请选择题目难度', trigger: 'change' }]
+      },
     }
   },
   watch: {
@@ -120,9 +125,21 @@ export default {
   methods: {
     handleSave() {
       this.createForm.answer = this.$refs.markdown.editorValue
-      alert(this.createForm.answer)
-      this.$nextTick(() => {
-        this.notSave = false
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          updateQuestion(this.createForm).then((res) => {
+            this.$notify({
+              title: '成功',
+              message: '题目更新成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.notSave = false
+          }).catch((e) => {
+            console.log(e)
+            this.notSave = false
+          })
+        }
       })
     },
     editorChange() {
