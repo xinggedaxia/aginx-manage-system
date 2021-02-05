@@ -90,11 +90,11 @@
         <el-table-column v-slot="{row}" label="难度" prop="level">
           {{ row.level | levelFilter }}
         </el-table-column>
-        <el-table-column label="创建人" prop="createBy" />
+        <el-table-column label="创建人" prop="createUser" />
         <el-table-column v-slot="{row}" label="创建日期" prop="createdAt" width="160">
           {{ row.createdAt | createdAtFilter }}
         </el-table-column>
-        <el-table-column label="更新人" prop="updateBy" />
+        <el-table-column label="更新人" prop="updateUser" />
         <el-table-column v-slot="{row}" label="更新日期" prop="updatedAt" width="160">
           {{ row.updatedAt | updatedAtFilter }}
 
