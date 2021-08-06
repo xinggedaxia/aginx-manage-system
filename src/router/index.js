@@ -196,6 +196,16 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: 'external-link-npm',
+    component: Layout,
+    children: [
+      {
+        path: 'http://aginx.cn:3389',
+        meta: { title: 'npm管理', icon: 'link' }
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
