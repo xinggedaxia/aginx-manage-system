@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <h2 class="title">个人资料</h2>
       <div class="info-list">
-        <el-avatar :size="100" :src="avatar" @click.native="imagecropperShow=true" style="cursor: pointer">
+        <el-avatar :size="100" :src="avatar" style="cursor: pointer" @click.native="imagecropperShow=true">
           <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png">
         </el-avatar>
         <image-cropper
@@ -142,7 +142,7 @@ export default {
     }
 
     return {
-      imageUrl: 'http://aginx.cn/manageSystem/api/user/uploadAvatar.do',
+      imageUrl: 'https://aginx.cn/manageSystem/api/user/uploadAvatar.do',
       showEditQq: false,
       imagecropperShow: false,
       imagecropperKey: 0,

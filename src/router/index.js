@@ -181,7 +181,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'http://120.25.27.70/',
+        path: 'https://aginx.cn/',
         meta: { title: '访问官网', icon: 'link' }
       }
     ]
